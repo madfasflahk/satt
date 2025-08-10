@@ -1,26 +1,139 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.table-cell-hover {
+  transition: all 0.1s ease-in-out;
+}
+
+.table-cell-hover:hover {
+  transform: scale(1.1);
+}
+
+/* TinyMCE Custom Styles */
+.tox-menubar {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #e9ecef !important;
+  padding: 4px 8px !important;
+}
+
+.tox-toolbar__primary {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #e9ecef !important;
+  padding: 4px 8px !important;
+}
+
+.tox-toolbar__group {
+  padding: 0 4px !important;
+}
+
+.tox-tbtn {
+  border-radius: 4px !important;
+}
+
+.tox-tbtn:hover {
+  background-color: #e9ecef !important;
+}
+
+.tox-menu {
+  border-radius: 4px !important;
+}
+
+.tox-collection__item {
+  padding: 6px 14px !important;
+}
+
+.tox-collection__item:hover {
+  background-color: #e9ecef !important;
+}
+
+/* Blue Toast Styles */
+.blue-toast {
+  background-color: #007bff !important; /* Blue background */
+  color: #fff !important; /* White text */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.blue-toast-body {
+  font-size: 14px;
+  color: #f0f0f0;
+}
+
+/* Collapsible animations */
+@keyframes collapsible-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-collapsible-down {
+  animation: collapsible-down 0.2s ease-out;
+}
+
+.animate-collapsible-up {
+  animation: collapsible-up 0.2s ease-out;
+}
+.bgImage{
+  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), url('/Web_Photo_Editor.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100vh;
+  top: 30px;
+  background-attachment: fixed;
+  
 }
