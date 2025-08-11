@@ -1,5 +1,6 @@
 import Header from '../components/Header';
 import GetCCurrentResult from '../components/GetCurrentResult';
+import parse from "html-react-parser";
 
 import CurrentDay from '../components/CurrentDay';
 import Importantfact from '../components/Importantfact';
@@ -26,11 +27,11 @@ const getAllFreeAd = async (url) => {
 const HomePage = async () => {
 
   const freeAd = await getAllFreeAd(`${process.env.NEXT_PUBLIC_API_URL}/freeAd?admin=1`);
-
+  
   return (
     <>
       <Header />
-      
+
 
       <div className="container mx-auto px-4 py-8 ">
         <div className=" my-6">
@@ -39,9 +40,29 @@ const HomePage = async () => {
               <div className="h-full   transition-all duration-300 ">
                 <div className="p-4 flex-grow">
                   <h3 className="text-center text-lg md:text-xl font-bold text-blue-600  mb-2">{e.title}</h3>
-                  <p className="text-gray-700  text-center mb-4">{e.content}</p>
-                  <p className="text-xl font-bold text-center text-purple-600 dark:text-purple-400 text-center">{e.aboutFees}</p>
-                  <p className="text-lg mt-2 text-center ">{e.name}</p>
+                  <p className="text-gray-700 text-center mb-4">
+                    {parse(e.content)}
+                  </p>
+                  <p className="text-xl font-bold  text-purple-600 dark:text-purple-400 text-center">{e.aboutFees}</p>
+                  <p className="text-lg mt-2 text-center font-bold text-zinc-800">{e.name}</p>
+                  <div className="flex items-center gap-2 justify-center mt-4">
+                    <Image
+                      src="/whatsapp.png"
+                      alt="WhatsApp"
+                      width={24}
+                      height={24}
+                      className="rounded-lg shadow-md"
+                    />
+                    <a
+                      href={`https://wa.me/${e.number}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      {e.number}
+                    </a>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -62,8 +83,25 @@ const HomePage = async () => {
               <div className="p-4 flex-grow">
                 <h3 className="text-center text-lg md:text-xl font-bold text-blue-600  mb-2">{e.title}</h3>
                 <p className="text-gray-700  text-center mb-4">{e.content}</p>
-                <p className="text-xl font-bold text-center text-purple-600 dark:text-purple-400 text-center">{e.aboutFees}</p>
-                <p className="text-lg mt-2 text-center ">{e.name}</p>
+                <p className="text-xl font-bold  text-purple-600 dark:text-purple-400 text-center">{e.aboutFees}</p>
+                <p className="text-lg mt-2 text-center font-bold text-zinc-800">{e.name}</p>
+                <div className="flex items-center gap-2 justify-center mt-4">
+                  <Image
+                    src="/whatsapp.png"
+                    alt="WhatsApp"
+                    width={24}
+                    height={24}
+                    className="rounded-lg shadow-md"
+                  />
+                  <a
+                    href={`https://wa.me/${e.number}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    {e.number}
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -89,8 +127,8 @@ const HomePage = async () => {
 
         <div className='my-8'>
 
-        <Importantfact />
-        
+          <Importantfact />
+
 
 
 

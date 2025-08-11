@@ -13,15 +13,22 @@ const CurrentDay = () => {
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/result?year=${year}&month=${month}`);
             if (res.status === 200) {
-             
-                setCurrentDay(res.data)
+                const resultList = res.data.resultList[res.data.resultList.length - 1];
+              
+                if(resultList.day=== new Date().getDate()){
+                    
+                    localStorage.setItem("currentday", JSON.stringify(resultList));
+                }else{
+                     localStorage.setItem("currentday", null);
+                }
+                setCurrentDay(res.data);
             }
         } catch (error) {
             console.log(error);
         }
     };
     useEffect(()=>{
-        handleDateChange(2025, 8);
+        handleDateChange(new Date().getFullYear(), new Date().getMonth() + 1);
     },[])
 
 
