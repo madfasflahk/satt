@@ -73,7 +73,7 @@ const ResultDisplay = ({ data }) => {
                 }}
               >
                 <td className="text-center text-lg px-4 py-2  bg-red-50  text-red-800 text-nowrap w-36">
-                  {`${String(row.day).padStart(2, '0')}-${String(data.month).padStart(2, '0')}`}
+                  {`${String(row.day).padStart(2, '0')}`}
                 </td>
                 {tableHeaders.slice(1).map((header) => (
                   <td 
