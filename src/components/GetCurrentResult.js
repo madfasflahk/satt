@@ -1,100 +1,104 @@
-"use client";
-import axios from "axios";
-import { useState, useEffect } from "react";
+'use client';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import useCurrentDayStore from '../store/useCurrentDayStore';
 
-const GetCurrentResult = () => {
-  const [results, setResults] = useState([]);
-  const [greeting, setGreeting] = useState("");
-  const [loading, setLoading] = useState(true);
+export const GetCurrentResult = () => {
+  const [greeting, setGreeting] = useState('');
   const [error, setError] = useState(null);
-  const [localData, setLocalData] = useState(null); // 👈 Track localStorage in state
+  const [count, setCount] = useState(0);
+  const { currentDay, currentDayData, setCurrentDayData } = useCurrentDayStore();
 
   // Greeting generator
   useEffect(() => {
     const now = new Date().getHours();
-    if (now < 12) setGreeting("GOOD MORNING");
-    else if (now < 16) setGreeting("GOOD AFTERNOON");
-    else if (now < 21) setGreeting("GOOD EVENING");
-    else setGreeting("GOOD NIGHT");
+    if (now < 12) setGreeting('GOOD MORNING');
+    else if (now < 16) setGreeting('GOOD AFTERNOON');
+    else if (now < 21) setGreeting('GOOD EVENING');
+    else setGreeting('GOOD NIGHT');
   }, []);
 
-  // Listen for localStorage changes (even from other tabs)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const updateLocalData = () => {
-      const stored = localStorage.getItem("currentday");
-      setLocalData(stored);
-    };
-
-    updateLocalData(); // Run once on mount
-
-    window.addEventListener("storage", updateLocalData); // For cross-tab updates
-    return () => window.removeEventListener("storage", updateLocalData);
-  }, []);
-
-  // Main data fetcher
-  useEffect(() => {
-    async function fetchFreshData() {
-      try {
-        await axios.get("/api/currentday");
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to fetch latest results");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    async function checkLocalDataAndFetch() {
-      if (!localData) {
-        console.log("No stored data, fetching fresh...");
-        await fetchFreshData();
-        return;
-      }
-
-      try {
-        let parsed = JSON.parse(localData);
-        setResults(
-          Object.fromEntries(Object.entries(parsed).filter(([key]) => key !== "_id"))
-        );
-
-        if (parsed.resultList?.length) {
-          parsed = parsed.resultList[0];
-        }
-
-        const todayDay = new Date().getDate();
-        if (parsed.day === todayDay) {
-          const hasNulls = Object.entries(parsed)
-            .filter(([k]) => !["_id", "day", "DateTime"].includes(k))
-            .some(([, v]) => v === null);
-
-          if (hasNulls) {
-            console.log("Found null values, fetching fresh...");
-            await fetchFreshData();
-          } else {
-            setResults(parsed);
-            setLoading(false);
-          }
-        } else {
-          console.log("Day mismatch, fetching fresh...");
-          await fetchFreshData();
-        }
-      } catch (err) {
-        console.error("Invalid JSON in localStorage:", err);
-        await fetchFreshData();
-      }
-    }
-
-    checkLocalDataAndFetch();
-  }, [localData]); // 👈 Now this only runs when state changes
-
-  if (loading) {
-    return <div className="text-center text-gray-500 mt-8">Loading results...</div>;
+  // Data fetcher
+useEffect(() => {
+  function countNulls(obj) {
+    return Object.entries(obj)
+      .filter(([k]) => !['_id', 'day', 'DateTime', 'kolkataKing', 'delhiLuckyBazar'].includes(k))
+      .reduce((count, [, v]) => count + (v === null ? 1 : 0), 0);
   }
 
+  async function fetchFreshData() {
+    if (count > 0) return;
+
+    try {
+      const res = await axios.get('/api/currentday');
+
+      const formatted = {
+        day: parseInt(res?.data.date.split('-')[0], 10),
+        delhiBazar: res?.data.DELHI_BAZAR_DL ?? null,
+        delhiLuckyBazar: null,
+        disawer: res?.data.DISAWER ?? null,
+        faridabad: res?.data.FARIDABAD ?? null,
+        gali: res?.data.GALI ?? null,
+        gaziyabad: res?.data.GHAZIYABAD ?? null,
+        kolkataKing: null,
+        shreeGanesh: res?.data.SHRI_GANESH ?? null
+      };
+
+      let bestData = null;
+
+      // If no currentDay, use fetched
+      if (!currentDay) {
+        bestData = formatted;
+      } else {
+        const nullsInCurrentDay = countNulls(currentDay);
+        const nullsInFetched = countNulls(formatted);
+
+        // Pick the one with fewer nulls
+        bestData = nullsInFetched < nullsInCurrentDay ? formatted : currentDay;
+      }
+
+      // Only set if it has any actual data
+      const hasData = [
+        bestData.delhiBazar,
+        bestData.disawer,
+        bestData.faridabad,
+        bestData.gali,
+        bestData.gaziyabad,
+        bestData.shreeGanesh
+      ].some(v => v !== null);
+
+      if (hasData) {
+        setCurrentDayData(bestData);
+      }
+
+      setCount(prevCount => prevCount + 1);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch latest results');
+    }
+  }
+
+  function needsFetching(data) {
+    if (!data) return true;
+    const todayDay = new Date().getDate();
+    if (data.day !== todayDay) return true;
+
+    return Object.entries(data)
+      .filter(([k]) => !['_id', 'day', 'DateTime'].includes(k))
+      .some(([, v]) => v === null);
+  }
+
+  if (!currentDayData || needsFetching(currentDayData)) {
+    fetchFreshData();
+  }
+}, [currentDayData, setCurrentDayData, currentDay]);
+
+
+
   if (error) {
-    return <div className="text-center text-red-500 font-bold mt-8 text-xl">{error}</div>;
+    return (
+      <div className="text-center text-red-500 font-bold mt-8 text-xl">{error}</div>
+    );
   }
 
   return (
@@ -112,27 +116,27 @@ const GetCurrentResult = () => {
       {/* Greeting */}
       <div className="text-center py-2 bg-gradient-to-r from-yellow-400 to-yellow-200 animate-pulse">
         <p className="text-lg font-bold">
-          {greeting}{" "}
+          {greeting}{' '}
           <span className="text-red-600">
             ({new Date().getDate()} /
-            {String(new Date().getMonth() + 1).padStart(2, "0")} /
+            {String(new Date().getMonth() + 1).padStart(2, '0')} /
             {new Date().getFullYear()})
           </span>
         </p>
       </div>
-
       {/* Results */}
-      {Object.entries(results).map(([key, value], index) => (
+      {Object.entries(currentDay ? currentDay : currentDayData || {}).map(([key, value], index) => (
         <div
           key={index}
           style={{
             display:
-              key === "DateTime" ||
-              key === "day" ||
-              key === "kolkataKing" ||
-              key === "delhiLuckyBazar"
-                ? "none"
-                : "block",
+              key === '_id' ||
+                key === 'DateTime' ||
+                key === 'day' ||
+                key === 'kolkataKing' ||
+                key === 'delhiLuckyBazar'
+                ? 'none'
+                : 'block',
           }}
           className="relative overflow-hidden bg-white shadow-lg rounded-lg p-4 border-l-4 border-red-500 mt-4"
         >
@@ -150,7 +154,7 @@ const GetCurrentResult = () => {
           <div className="mt-2 flex justify-between items-center">
             <span className="text-gray-600">RESULT</span>
             <span className="text-3xl font-bold text-blue-700">
-              {value ? value : "Wait... "}
+              {value || 'Wait...'}
             </span>
           </div>
         </div>
@@ -158,5 +162,3 @@ const GetCurrentResult = () => {
     </div>
   );
 };
-
-export default GetCurrentResult;

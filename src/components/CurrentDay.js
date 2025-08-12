@@ -3,27 +3,32 @@ import React, { useEffect, useState } from 'react'
 import ResultDisplay from './ResultDisplay';
 import YearMonthSelector from './YearMonthSelector';
 import axios from 'axios';
+import useCurrentDayStore from '@/store/useCurrentDayStore';
 
 const CurrentDay = () => {
     const [currentDay, setCurrentDay] = useState([])
-
+    const{setCurrentDays} = useCurrentDayStore();
 
     const handleDateChange = async (year, month) => {
     
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/result?year=${year}&month=${month}`);
+           setCurrentDay(res?.data??[]);
             if (res.status === 200) {
                 const resultList = res.data.resultList[res.data.resultList.length - 1];
+
+                
               
                 if(resultList.day=== new Date().getDate()){
-                    
-                    localStorage.setItem("currentday", JSON.stringify(resultList));
+                    setCurrentDays(resultList);
+
                 }else{
-                     localStorage.setItem("currentday", null);
+                     setCurrentDays(null);
                 }
-                setCurrentDay(res.data);
+                
             }
         } catch (error) {
+            
             console.log(error);
         }
     };

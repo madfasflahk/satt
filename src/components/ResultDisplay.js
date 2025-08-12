@@ -34,7 +34,7 @@ const ResultDisplay = ({ data }) => {
     { id: 'delhiBazar', label: 'DELHI BAZAR', minWidth: '170px' },
     { id: 'shreeGanesh', label: 'SHREE GANESH', minWidth: '170px' },
   ];
-  
+    console.log("data.resultList",data)
   return (
     <div className="w-full overflow-hidden bg-white rounded-lg shadow-md">
      
@@ -47,7 +47,7 @@ const ResultDisplay = ({ data }) => {
               {tableHeaders.map((header) => (
                 <th
                   key={header.id}
-                  className={`sticky text-sm top-0 bg-red-800 text-white font-bold text-lg px-4 py-2 text-center min-w-[${header.minWidth}]`}
+                  className={`sticky text-sm top-0 bg-red-800 text-white font-bold  px-4 py-2 text-center min-w-[${header.minWidth}]`}
                 >
                   {header.label}
                 </th>
@@ -55,13 +55,14 @@ const ResultDisplay = ({ data }) => {
             </tr>
           </thead>
           <tbody className='text-zinc-900'>
-            {data=== null && (
+            {data?.length === 0 && (
               <tr>
                 <td colSpan={tableHeaders.length} className="text-center py-4 text-red-600">
                   No results found.
                 </td>
               </tr>
             )}
+           
             {data && data.resultList && data.resultList.sort((a, b) => a.day - b.day).map((row, index) => (
               <tr 
                 key={index}

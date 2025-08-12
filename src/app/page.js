@@ -1,5 +1,5 @@
 import Header from '../components/Header';
-import GetCCurrentResult from '../components/GetCurrentResult';
+
 import parse from "html-react-parser";
 
 import CurrentDay from '../components/CurrentDay';
@@ -8,6 +8,7 @@ import AlterNative from '../components/AlterNative';
 import YearlyResult from '../components/YearlyResult';
 import Footer from '../components/Footer';
 import Image from 'next/image';
+import { GetCurrentResult } from '@/components/GetCurrentResult';
 
 const getAllFreeAd = async (url) => {
   const response = await fetch(url, {
@@ -71,10 +72,10 @@ const HomePage = async () => {
 
 
 
-        <GetCCurrentResult />
+       
 
 
-
+          <GetCurrentResult />
 
 
         {freeAd.slice(-1).map((e) => (

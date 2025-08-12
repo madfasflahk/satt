@@ -41,13 +41,13 @@ async function scrapeSattaData() {
       table.find(
         (row) =>
           row.date === currentDateString ||
-          row.date === `${Number(day)}-${Number(month)}`
+          row.date === `${Number(12)}-${Number(month)}`
       ) || {};
 
     const t1Today = matchRow(table1);
     const t3Today = matchRow(table3);
     const t4Today = matchRow(table4);
-
+     
     return {
       date: currentDateString,
       time: currentTime,
@@ -69,6 +69,10 @@ export async function GET() {
 
   try {
     const scraped = await scrapeSattaData();
+
+
+    console.log(scraped);
+
     if (!scraped) {
       return new Response(JSON.stringify({ error: "Scraping failed" }), { status: 500 });
     }
@@ -101,7 +105,7 @@ export async function GET() {
       { headers: { "Content-Type": "application/json" } }
     );
 
-    return new Response(JSON.stringify(postRes.data), { status: 200 });
+    return new Response(JSON.stringify(scraped), { status: 200 });
   } catch (error) {
     console.error("API Error:", error.message);
     return new Response(JSON.stringify({ error: "Failed to fetch data" }), { status: 500 });
