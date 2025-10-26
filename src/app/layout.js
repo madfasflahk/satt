@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
         className={`bg-zinc-200 bgImage`}
         suppressHydrationWarning
       >
-        {/* {children} */}
+         {children}
       </body>
     </html>
   );
