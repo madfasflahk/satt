@@ -7,45 +7,47 @@ import useCurrentDayStore from '@/store/useCurrentDayStore';
 
 const CurrentDay = () => {
     const [currentDay, setCurrentDay] = useState([])
-    const{setCurrentDays} = useCurrentDayStore();
+    const { setCurrentDays } = useCurrentDayStore();
 
     const handleDateChange = async (year, month) => {
-    
+
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/result?year=${year}&month=${month}`);
-           setCurrentDay(res?.data??[]);
+            setCurrentDay(res?.data ?? []);
             if (res.status === 200) {
                 const resultList = res.data.resultList[res.data.resultList.length - 1];
 
-                
-              
-                if(resultList.day=== new Date().getDate()){
+
+
+                if (resultList.day === new Date().getDate()) {
                     setCurrentDays(resultList);
 
-                }else{
-                     setCurrentDays(null);
+                } else {
+                    setCurrentDays(null);
                 }
-                
+
             }
         } catch (error) {
-            
+
             console.log(error);
         }
     };
-    useEffect(()=>{
+    useEffect(() => {
         handleDateChange(new Date().getFullYear(), new Date().getMonth() + 1);
-    },[])
+    }, [])
 
 
 
     return (
         <div>
             <div className={`my-3 shadow-lg  text-white rounded`}>
-                <div className={`flex mb-2 justify-center rounded items-center gap-4 bg-amber-100 dark:bg-red-900 py-3 px-4`}>
-                    
+                <div className="flex mb-2 justify-center rounded items-center gap-4 ...">
                     <YearMonthSelector onDateChange={handleDateChange} />
                 </div>
-               <ResultDisplay data={currentDay} />
+
+
+
+                <ResultDisplay data={currentDay} />
             </div>
         </div>
     )

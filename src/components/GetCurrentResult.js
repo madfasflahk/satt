@@ -1,15 +1,11 @@
 'use client';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import useCurrentDayStore from '../store/useCurrentDayStore';
 
 export const GetCurrentResult = () => {
   const [greeting, setGreeting] = useState('');
-  const [error, setError] = useState(null);
-  const [count, setCount] = useState(0);
-  const { currentDay, currentDayData, setCurrentDayData } = useCurrentDayStore();
+  const { currentDay } = useCurrentDayStore();
 
-  // Greeting generator
   useEffect(() => {
     const now = new Date().getHours();
     if (now < 12) setGreeting('GOOD MORNING');
@@ -18,147 +14,59 @@ export const GetCurrentResult = () => {
     else setGreeting('GOOD NIGHT');
   }, []);
 
-  // Data fetcher
-useEffect(() => {
-  function countNulls(obj) {
-    return Object.entries(obj)
-      .filter(([k]) => !['_id', 'day', 'DateTime', 'kolkataKing', 'delhiLuckyBazar'].includes(k))
-      .reduce((count, [, v]) => count + (v === null ? 1 : 0), 0);
-  }
-
-  async function fetchFreshData() {
-    if (count > 0) return;
-
-    try {
-      const res = await axios.get('/api/currentday');
-
-      const formatted = {
-        day: parseInt(res?.data.date.split('-')[0], 10),
-        delhiBazar: res?.data.DELHI_BAZAR_DL ?? null,
-        delhiLuckyBazar: null,
-        disawer: res?.data.DISAWER ?? null,
-        faridabad: res?.data.FARIDABAD ?? null,
-        gali: res?.data.GALI ?? null,
-        gaziyabad: res?.data.GHAZIYABAD ?? null,
-        kolkataKing: null,
-        shreeGanesh: res?.data.SHRI_GANESH ?? null
-      };
-
-      let bestData = null;
-
-      // If no currentDay, use fetched
-      if (!currentDay) {
-        bestData = formatted;
-      } else {
-        const nullsInCurrentDay = countNulls(currentDay);
-        const nullsInFetched = countNulls(formatted);
-
-        // Pick the one with fewer nulls
-        bestData = nullsInFetched < nullsInCurrentDay ? formatted : currentDay;
-      }
-
-      // Only set if it has any actual data
-      const hasData = [
-        bestData.delhiBazar,
-        bestData.disawer,
-        bestData.faridabad,
-        bestData.gali,
-        bestData.gaziyabad,
-        bestData.shreeGanesh
-      ].some(v => v !== null);
-
-      if (hasData) {
-        setCurrentDayData(bestData);
-      }
-
-      setCount(prevCount => prevCount + 1);
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to fetch latest results');
-    }
-  }
-
-  function needsFetching(data) {
-    if (!data) return true;
-    const todayDay = new Date().getDate();
-    if (data.day !== todayDay) return true;
-
-    return Object.entries(data)
-      .filter(([k]) => !['_id', 'day', 'DateTime'].includes(k))
-      .some(([, v]) => v === null);
-  }
-
-  if (!currentDayData || needsFetching(currentDayData)) {
-    fetchFreshData();
-  }
-}, [currentDayData, setCurrentDayData, currentDay]);
-
-
-
-  if (error) {
-    return (
-      <div className="text-center text-red-500 font-bold mt-8 text-xl">{error}</div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      {/* Heading */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold text-red-600 mb-2">
-          NEW DELHI BAZAR SATTA
-        </h1>
-        <h2 className="text-xl font-semibold text-blue-600">
-          Satta King Live Result
-        </h2>
-      </div>
+    <div className="max-w-5xl mx-auto p-6 bg-black min-h-screen text-center">
+      {/* Date & Time */}
+      <p className="text-cyan-300 font-bold text-lg mb-8">
+        {new Date().toLocaleString('en-US', {
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })}
+      </p>
 
       {/* Greeting */}
-      <div className="text-center py-2 bg-gradient-to-r from-yellow-400 to-yellow-200 animate-pulse">
-        <p className="text-lg font-bold">
-          {greeting}{' '}
-          <span className="text-red-600">
-            ({new Date().getDate()} /
-            {String(new Date().getMonth() + 1).padStart(2, '0')} /
-            {new Date().getFullYear()})
-          </span>
-        </p>
+      <div className="text-3xl font-semibold text-cyan-400 mb-10">
+        {greeting}{' '}
+        <span className="text-cyan-400">
+          ({new Date().getDate()} / {String(new Date().getMonth() + 1).padStart(2, '0')} / {new Date().getFullYear()})
+        </span>
       </div>
+
       {/* Results */}
-      {Object.entries(currentDay ? currentDay : currentDayData || {}).map(([key, value], index) => (
-        <div
-          key={index}
-          style={{
-            display:
-              key === '_id' ||
+      {currentDay ? (
+        Object.entries(currentDay).map(([key, value], index) => (
+          <div
+            key={index}
+            style={{
+              display:
+                key === '_id' ||
                 key === 'DateTime' ||
                 key === 'day' ||
                 key === 'kolkataKing' ||
                 key === 'delhiLuckyBazar'
-                ? 'none'
-                : 'block',
-          }}
-          className="relative overflow-hidden bg-white shadow-lg rounded-lg p-4 border-l-4 border-red-500 mt-4"
-        >
-          <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold uppercase">{key}</span>
-            <div className="relative">
-              <span className="absolute right-12 top-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-bounce">
-                {String(key).charAt(0).toUpperCase()}
-              </span>
-              <span className="text-xl font-bold text-red-600 z-10 relative">
-                LIVE
-              </span>
-            </div>
+                  ? 'none'
+                  : 'block',
+            }}
+            className="my-8 p-6 rounded-2xl bg-black bg-opacity-70"
+          >
+            <h2 className="text-4xl font-extrabold uppercase mb-2 tracking-widest glow-on-text">
+              {key}
+            </h2>
+            <h3 className="text-5xl font-extrabold glow-on-number">
+              {value ? value : 'WAIT'}
+            </h3>
           </div>
-          <div className="mt-2 flex justify-between items-center">
-            <span className="text-gray-600">RESULT</span>
-            <span className="text-3xl font-bold text-blue-700">
-              {value || 'Wait...'}
-            </span>
-          </div>
+        ))
+      ) : (
+        <div className="text-cyan-400 text-2xl font-bold mt-8 animate-glow">
+          Waiting for Today&apos;s Results...
         </div>
-      ))}
+      )}
     </div>
   );
 };

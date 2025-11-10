@@ -1,37 +1,28 @@
-import React from 'react';
-import Link from 'next/link';
+"use client";
+import React from "react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-red-800 text-white py-6 mt-8">
-      <div className="container max-w-6xl mx-auto px-4">
-        <h3 className="text-xl font-bold text-center mb-4">
+    <footer className="bg-black text-gray-300 py-8 mt-12">
+      <div className="max-w-6xl mx-auto px-4 text-center">
+        <h3 className="text-2xl font-bold text-white mb-2">
           Kolkata Satta
         </h3>
-        <p className="text-lg text-center">
+        <p className="text-base mb-4">
           Your trusted source for Satta King results and charts.
         </p>
-        <div className="flex justify-center mt-4 space-x-4">
-          <Link href="#" className="hover:underline">
-            About
-          </Link>
-          <Link href="#" className="hover:underline">
-            Disclaimer
-          </Link>
-          <Link href="#" className="hover:underline">
-            Privacy Policy
-          </Link>
-          <Link href="#" className="hover:underline">
-            Sitemap
-          </Link>
+        <div className="flex flex-wrap justify-center gap-4 mb-4">
+          <Link href="#" className="hover:underline text-gray-400">About</Link>
+          <Link href="#" className="hover:underline text-gray-400">Disclaimer</Link>
+          <Link href="#" className="hover:underline text-gray-400">Privacy Policy</Link>
+          <Link href="#" className="hover:underline text-gray-400">Sitemap</Link>
         </div>
-        <p className="text-sm text-center mt-4">
-          {'Copyright © '}
-          <Link href="https://kolkatasattapro.in/" className="hover:underline">
+        <p className="text-sm text-gray-500">
+          © {new Date().getFullYear()}{" "}
+          <Link href="https://kolkatasattapro.in/" className="text-gray-400 hover:underline">
             Kolkata Satta
-          </Link>{' '}
-          {new Date().getFullYear()}
-          {'.'}
+          </Link>
         </p>
       </div>
     </footer>
