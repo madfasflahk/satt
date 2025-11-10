@@ -52,14 +52,17 @@ export const GetCurrentResult = () => {
                   ? 'none'
                   : 'block',
             }}
-            className="my-8 p-6 rounded-2xl bg-black bg-opacity-70"
+            className=" p-6 rounded-2xl bg-black bg-opacity-70 border flex mb-1 "
           >
-            <h2 className="text-4xl font-extrabold uppercase mb-2 tracking-widest glow-on-text">
+            <div className='flex  justify-between align-middle'>
+
+            <h2 className="text-3xl font-extrabold uppercase tracking-widest text-cyan-400">
               {key}
             </h2>
-            <h3 className="text-5xl font-extrabold glow-on-number">
-              {value ? value : 'WAIT'}
+            <h3 className="text-5xl  glow-on-number tracking-widest ">
+              {value ? value : <span className="text-red-500 text-3xl">wait</span>}
             </h3>
+            </div>
           </div>
         ))
       ) : (
