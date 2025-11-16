@@ -36,33 +36,33 @@ export async function GetResultOrder(admin) {
   }
 }
 
-export async function getCurrentDay(admin) {
-  await dbConnect();
-  try {
-    let query = {};
+// export async function getCurrentDay(admin) {
+//   await dbConnect();
+//   try {
+//     let query = {};
 
-    const now = new Date();
-    const year = now.getFullYear().toString();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
+//     const now = new Date();
+//     const year = now.getFullYear().toString();
+//     const month = now.getMonth() + 1;
+//     const day = now.getDate();
 
-    const record = await SattaKingRecordChartjs.findOne({
-      year,
-      month,
-      "resultList.day": day
-    });
+//     const record = await SattaKingRecordChartjs.findOne({
+//       year,
+//       month,
+//       "resultList.day": day
+//     });
 
-    if (!record) {
-      return JSON.parse(JSON.stringify({ message: "No record found for today" }));
+//     if (!record) {
+//       return JSON.parse(JSON.stringify({ message: "No record found for today" }));
 
-    }
+//     }
 
-    const todayResult = record.resultList.find(r => r.day === day);
+//     const todayResult = record.resultList.find(r => r.day === day);
 
 
-    return JSON.parse(JSON.stringify(todayResult)); // Serialize to plain JSON
-  } catch (error) {
-   console.error('Error fetching free ads from DB:', error);
-    throw new Error('Failed to fetch free ads from database');
-  }
-}
+//     return JSON.parse(JSON.stringify(todayResult)); // Serialize to plain JSON
+//   } catch (error) {
+//    console.error('Error fetching free ads from DB:', error);
+//     throw new Error('Failed to fetch free ads from database');
+//   }
+// }

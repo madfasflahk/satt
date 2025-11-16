@@ -8,7 +8,7 @@ import AlterNative from '../components/AlterNative';
 import YearlyResult from '../components/YearlyResult';
 import Footer from '../components/Footer';
 import Image from 'next/image';
-import CurrentResult  from '@/components/GetCurrentResult';
+// import CurrentResult  from '@/components/GetCurrentResult';
 import Logo from '@/components/Logo';
 
 import { getFreeAdsFromDb,GetResultOrder } from '@/lib/data/freeAd';
