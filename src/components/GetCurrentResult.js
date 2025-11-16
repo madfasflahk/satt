@@ -1,4 +1,6 @@
-export const revalidate = 30; // ISR every 30s
+export const revalidate = 0; // disable ISR to prevent pre-render DB issues
+export const dynamic = "force-dynamic"; // always run on server
+export const fetchCache = "force-no-store"; // no caching
 
 import { getCurrentDay } from "@/lib/data/freeAd";
 
@@ -27,12 +29,10 @@ export default async function CurrentResult({ resultOrder }) {
 
   return (
     <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
-      {/* Greeting */}
       <h1 className="text-3xl font-semibold mb-6 tracking-wide text-cyan-400 drop-shadow-lg">
         {getGreeting()}
       </h1>
 
-      {/* Result Cards */}
       <div className="w-full max-w-xl space-y-5">
         {sortedKeys.map((key) => (
           <div
@@ -47,15 +47,12 @@ export default async function CurrentResult({ resultOrder }) {
               transition-all duration-300
             "
           >
-            {/* Card Glow Line */}
             <div className="absolute inset-x-0 top-0 h-[2px] bg-cyan-400 opacity-40 blur-sm"></div>
 
-            {/* Left Name */}
             <span className="text-xl font-bold tracking-wider uppercase text-cyan-300">
               {resultOrder[key].name}
             </span>
 
-            {/* Right Value */}
             <span
               className="
                 text-4xl font-extrabold tracking-widest 
