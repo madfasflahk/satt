@@ -82,7 +82,7 @@ const HomePage = async () => {
 
 
 
-        <CurrentResult resultOrder={resultOrder} />
+        {/* <CurrentResult resultOrder={resultOrder} /> */}
 
 
         {freeAd.slice(-1).map((e) => (
