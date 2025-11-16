@@ -8,27 +8,16 @@ import AlterNative from '../components/AlterNative';
 import YearlyResult from '../components/YearlyResult';
 import Footer from '../components/Footer';
 import Image from 'next/image';
-import { GetCurrentResult } from '@/components/GetCurrentResult';
+import CurrentResult  from '@/components/GetCurrentResult';
 import Logo from '@/components/Logo';
 
-const getAllFreeAd = async (url) => {
-  const response = await fetch(url, {
-
-    next: {
-      revalidate: 60
-    }
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  return response.json();
-};
-
+import { getFreeAdsFromDb,GetResultOrder } from '@/lib/data/freeAd';
 
 
 const HomePage = async () => {
 
-  const freeAd = await getAllFreeAd(`${process.env.NEXT_PUBLIC_API_URL}/freeAd?admin=1`);
+  const freeAd = await getFreeAdsFromDb('1');
+  const resultOrder = await GetResultOrder('1');
 
   return (
     <>
@@ -37,7 +26,7 @@ const HomePage = async () => {
 
       <Logo />
 
-      <div className="mx-auto  ">
+      <div className="mx-auto bg-zinc-950 ">
         <div className="">
           {freeAd.slice(0, -1).map((e) => (
             <div key={e._id} className='bg-gradient-to-r from-[#f44305] via-[#f47b1f] to-[#f8d12f] py-5 my-4 px-4'>
@@ -93,7 +82,7 @@ const HomePage = async () => {
 
 
 
-        <GetCurrentResult />
+        <CurrentResult resultOrder={resultOrder} />
 
 
         {freeAd.slice(-1).map((e) => (
@@ -155,9 +144,9 @@ const HomePage = async () => {
 
 
 
-        <CurrentDay />
+        <CurrentDay resultOrder={resultOrder} />
 
-        <YearlyResult />
+        <YearlyResult  resultOrder={resultOrder} />
         {/* <YearlyResult /> */}
 
         <div className='my-8'>
@@ -171,6 +160,7 @@ const HomePage = async () => {
         <AlterNative />
 
       </div>
+      
       <Footer />
     </>
   );

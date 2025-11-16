@@ -1,14 +1,22 @@
-import axios from "axios";
 import parse from "html-react-parser";
 import React from "react";
 
-const getCurrentResult = async (url) => {
+const getCurrentResult = async () => {
   try {
-    const response = await axios.get(url, {
-      params: { cache: "no-cache" },
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000'; // Default for local development
+    const url = new URL(`/api/v1/importantFactSatta`, baseUrl).toString();
+    const response = await fetch(url, {
+      cache: "no-cache",
       headers: { "Content-Type": "application/json" },
     });
-    return response.data;
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Failed to fetch data: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error in getCurrentResult:", error);
     throw error;
@@ -16,9 +24,7 @@ const getCurrentResult = async (url) => {
 };
 
 const Importantfact = async () => {
-  const importantFact = await getCurrentResult(
-    `${process.env.NEXT_PUBLIC_API_URL}/importantFact`
-  );
+  const importantFact = await getCurrentResult();
 
   return (
     <div className="bg-gradient-to-r from-[#f44305] via-[#f47b1f] to-[#f8d12f] py-10 px-4 rounded-xl shadow-lg">

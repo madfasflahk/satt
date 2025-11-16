@@ -1,0 +1,57 @@
+{
+  "delhiLuckyBazar": {
+    "name": "Delhi Lucky Bazar",
+    "order": 1,
+    "isVerified": true
+  },
+  "disawer": {
+    "name": "Disawer",
+    "order": 2,
+    "isVerified": true
+  },
+  "faridabad": {
+    "name": "Faridabad",
+    "order": 3,
+    "isVerified": true
+  },
+  "gaziyabad": {
+    "name": "Gaziyabad",
+    "order": 4,
+    "isVerified": true
+  },
+  "kolkataKing": {
+    "name": "Kolkata King",
+    "order": 5,
+    "isVerified": true
+  },
+  "gali": {
+    "name": "Gali",
+    "order": 6,
+    "isVerified": true
+  },
+  "delhiBazar": {
+    "name": "Delhi Bazar",
+    "order": 7,
+    "isVerified": true
+  },
+  "shreeGanesh": {
+    "name": "Shree Ganesh",
+    "order": 8,
+    "isVerified": true
+  },
+  "luckpoti": {
+    "name": "Luckpoti",
+    "order": 9,
+    "isVerified": true
+  },
+  "sreeRam": {
+    "name": "Sree Ram",
+    "order": 10,
+    "isVerified": true
+  },
+  "dlb": {
+    "name": "DLB",
+    "order": 1,
+    "isVerified": true
+  }
+}

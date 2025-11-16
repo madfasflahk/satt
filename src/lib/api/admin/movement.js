@@ -1,11 +1,16 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'http://localhost:3000'; // Default for local development
 
 export const getAllMovements = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}movement?admin=1`);
-        return response.data;
+        const url = new URL(`/api/v1/movement?admin=1`, baseUrl).toString();
+        const response = await fetch(url);
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to fetch all movements: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error('Error fetching all movements:', error);
         throw error;
@@ -14,8 +19,13 @@ export const getAllMovements = async () => {
 
 export const getMovementById = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}movement/${id}?admin=1`);
-        return response.data;
+        const url = new URL(`/api/v1/movement/${id}?admin=1`, baseUrl).toString();
+        const response = await fetch(url);
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to fetch movement with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error fetching movement with ID ${id}:`, error);
         throw error;
@@ -24,8 +34,19 @@ export const getMovementById = async (id) => {
 
 export const createMovement = async (movementData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}movement`, movementData);
-        return response.data;
+        const url = new URL(`/api/v1/movement`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(movementData),
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to create movement: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error('Error creating movement:', error);
         throw error;
@@ -34,8 +55,19 @@ export const createMovement = async (movementData) => {
 
 export const updateMovement = async (id, movementData) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}movement/${id}`, movementData);
-        return response.data;
+        const url = new URL(`/api/v1/movement/${id}`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(movementData),
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to update movement with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error updating movement with ID ${id}:`, error);
         throw error;
@@ -44,8 +76,15 @@ export const updateMovement = async (id, movementData) => {
 
 export const deleteMovement = async (id) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}movement/${id}`);
-        return response.data;
+        const url = new URL(`/api/v1/movement/${id}`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to delete movement with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error deleting movement with ID ${id}:`, error);
         throw error;

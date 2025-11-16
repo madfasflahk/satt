@@ -1,11 +1,16 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'http://localhost:3000'; // Default for local development
 
 export const getAllImportantFacts = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}importantFact?admin=1`);
-        return response.data;
+        const url = new URL(`/api/v1/importantFactSatta?admin=1`, baseUrl).toString();
+        const response = await fetch(url);
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to fetch all important facts: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error('Error fetching all important facts:', error);
         throw error;
@@ -14,8 +19,13 @@ export const getAllImportantFacts = async () => {
 
 export const getImportantFactById = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}importantFact/${id}?admin=1`);
-        return response.data;
+        const url = new URL(`/api/v1/importantFactSatta/${id}?admin=1`, baseUrl).toString();
+        const response = await fetch(url);
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to fetch important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error fetching important fact with ID ${id}:`, error);
         throw error;
@@ -24,8 +34,19 @@ export const getImportantFactById = async (id) => {
 
 export const createImportantFact = async (importantFactData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}importantFact`, importantFactData);
-        return response.data;
+        const url = new URL(`/api/v1/importantFactSatta`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(importantFactData),
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to create important fact: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error('Error creating important fact:', error);
         throw error;
@@ -34,8 +55,19 @@ export const createImportantFact = async (importantFactData) => {
 
 export const updateImportantFact = async (id, importantFactData) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}importantFact/${id}`, importantFactData);
-        return response.data;
+        const url = new URL(`/api/v1/importantFactSatta/${id}`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(importantFactData),
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to update important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error updating important fact with ID ${id}:`, error);
         throw error;
@@ -44,8 +76,15 @@ export const updateImportantFact = async (id, importantFactData) => {
 
 export const deleteImportantFact = async (id) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}importantFact/${id}`);
-        return response.data;
+        const url = new URL(`/api/v1/importantFactSatta/${id}`, baseUrl).toString();
+        const response = await fetch(url, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to delete important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        return response.json();
     } catch (error) {
         console.error(`Error deleting important fact with ID ${id}:`, error);
         throw error;

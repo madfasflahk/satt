@@ -1,75 +1,78 @@
-'use client';
-import { useState, useEffect } from 'react';
-import useCurrentDayStore from '../store/useCurrentDayStore';
+export const revalidate = 30; // ISR every 30s
 
-export const GetCurrentResult = () => {
-  const [greeting, setGreeting] = useState('');
-  const { currentDay } = useCurrentDayStore();
+import { getCurrentDay } from "@/lib/data/freeAd";
 
-  useEffect(() => {
-    const now = new Date().getHours();
-    if (now < 12) setGreeting('GOOD MORNING');
-    else if (now < 16) setGreeting('GOOD AFTERNOON');
-    else if (now < 21) setGreeting('GOOD EVENING');
-    else setGreeting('GOOD NIGHT');
-  }, []);
+export default async function CurrentResult({ resultOrder }) {
+  const data = await getCurrentDay();
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6 flex justify-center items-center">
+        <h1 className="text-lg text-gray-400 animate-pulse">Wait...</h1>
+      </div>
+    );
+  }
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "🌅 Good Morning!";
+    if (hour < 18) return "☀️ Good Afternoon!";
+    if (hour < 21) return "🌆 Good Evening!";
+    return "🌙 Good Night!";
+  };
+
+  const sortedKeys = Object.keys(resultOrder)
+    .filter((key) => resultOrder[key]?.isVerified)
+    .sort((a, b) => resultOrder[a].order - resultOrder[b].order);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-black min-h-screen text-center">
-      {/* Date & Time */}
-      <p className="text-cyan-300 font-bold text-lg mb-8">
-        {new Date().toLocaleString('en-US', {
-          month: 'long',
-          day: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true,
-        })}
-      </p>
-
+    <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
       {/* Greeting */}
-      <div className="text-3xl font-semibold text-cyan-400 mb-10">
-        {greeting}{' '}
-        <span className="text-cyan-400">
-          ({new Date().getDate()} / {String(new Date().getMonth() + 1).padStart(2, '0')} / {new Date().getFullYear()})
-        </span>
-      </div>
+      <h1 className="text-3xl font-semibold mb-6 tracking-wide text-cyan-400 drop-shadow-lg">
+        {getGreeting()}
+      </h1>
 
-      {/* Results */}
-      {currentDay ? (
-        Object.entries(currentDay).map(([key, value], index) => (
+      {/* Result Cards */}
+      <div className="w-full max-w-xl space-y-5">
+        {sortedKeys.map((key) => (
           <div
-            key={index}
-            style={{
-              display:
-                key === '_id' ||
-                key === 'DateTime' ||
-                key === 'day' ||
-                key === 'kolkataKing' ||
-                key === 'delhiLuckyBazar'
-                  ? 'none'
-                  : 'block',
-            }}
-            className=" p-6 rounded-2xl bg-black bg-opacity-70 border flex mb-1 "
+            key={key}
+            className="
+              flex justify-between items-center
+              p-5 rounded-2xl relative overflow-hidden
+              bg-gradient-to-br from-neutral-900 to-black
+              border border-cyan-800/30 shadow-[0_0_15px_rgba(0,255,255,0.15)]
+              backdrop-blur-xl
+              hover:shadow-[0_0_25px_rgba(0,255,255,0.35)]
+              transition-all duration-300
+            "
           >
-            <div className='flex  justify-between align-middle'>
+            {/* Card Glow Line */}
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-cyan-400 opacity-40 blur-sm"></div>
 
-            <h2 className="text-3xl font-extrabold uppercase tracking-widest text-cyan-400">
-              {key}
-            </h2>
-            <h3 className="text-5xl  glow-on-number tracking-widest ">
-              {value ? value : <span className="text-red-500 text-3xl">wait</span>}
-            </h3>
-            </div>
+            {/* Left Name */}
+            <span className="text-xl font-bold tracking-wider uppercase text-cyan-300">
+              {resultOrder[key].name}
+            </span>
+
+            {/* Right Value */}
+            <span
+              className="
+                text-4xl font-extrabold tracking-widest 
+                text-white drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]
+              "
+            >
+              {data[key] === null ? (
+                <span className="text-red-400 text-2xl animate-pulse">
+                  Wait...
+                </span>
+              ) : (
+                data[key]
+              )}
+            </span>
           </div>
-        ))
-      ) : (
-        <div className="text-cyan-400 text-2xl font-bold mt-8 animate-glow">
-          Waiting for Today&apos;s Results...
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
-};
+}

@@ -1,16 +1,21 @@
 import React from 'react';
-import axios from 'axios';
 
-const getCurrentResult = async (url) => {
+const getCurrentResult = async () => {
     try {
-        const response = await axios.get(url, {
-            params: { cache: 'no-cache' },
+        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+            : 'http://localhost:3000'; // Default for local development
+        const url = new URL(`/api/v1/notice`, baseUrl).toString();
+        const response = await fetch(url, {
+            cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' }
         });
 
-
-        const responseData = response.data;
-
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to fetch data: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+        const responseData = await response.json();
         return responseData;
     } catch (error) {
         console.error('Error in getCurrentResult:', error);
@@ -18,9 +23,7 @@ const getCurrentResult = async (url) => {
     }
 };
 const NoticeBoard = async () => {
-    const notice = await getCurrentResult(
-        `${process.env.NEXT_PUBLIC_API_URL}notice`
-    );
+    const notice = await getCurrentResult();
     return (
         <div className="my-8 bg-red-900">
             {notice && notice.map((e, i) => (

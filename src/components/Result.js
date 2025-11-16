@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import * as XLSX from 'xlsx';
 import { useGlobalSkills } from "../context/skillContext";
@@ -86,17 +85,31 @@ const Result = () => {
         };
 
         try {
-            const res = await axios.post(
-                `${process.env.REACT_APP_API}result`,
-                data
+            const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+                : 'http://localhost:3000'; // Default for local development
+            const url = new URL(`/api/v1/result`, baseUrl).toString();
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
             );
-            if (res.status === 200) {
+            if (res.ok) {
                 alert("Record updated successfully");
                 setFormData(initialState); // Reset form data to initial state
                 setPost("")
+            } else {
+                const errorBody = await res.text();
+                throw new Error(`Failed to upload record: ${res.status} ${res.statusText} - ${errorBody}`);
             }
         } catch (error) {
             alert("Something went wrong");
+            console.error(error);
         }
     };
 
@@ -321,14 +334,28 @@ const Result = () => {
 
 
                             try {
-                                const response = await axios.post(`${process.env.REACT_APP_API}result`,
-                                    data);
-                               if(response.status===200){
+                                const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+                                    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+                                    : 'http://localhost:3000'; // Default for local development
+                                const url = new URL(`/api/v1/result`, baseUrl).toString();
+                                const response = await fetch(url,
+                                    {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify(data),
+                                    });
+                               if(response.ok){
                                 alert('data upload successfully')
                                 setFormDataDirect(initialState_DirectUpload)
+                               } else {
+                                const errorBody = await response.text();
+                                throw new Error(`Failed to upload data: ${response.status} ${response.statusText} - ${errorBody}`);
                                }
                             } catch (error) {
                                 console.error('Error submitting form:', error);
+                                alert("Something went wrong");
                             }
                         }
                         }
@@ -402,16 +429,27 @@ const Result = () => {
                                 }}    >Edit</button> */}
                                 <button className="btn btn-sm btn-danger w-50" onClick={async () => {
                                     try {
-                                        const res = await axios.delete(
-                                            `${process.env.REACT_APP_API}result/${e._id}`,
+                                        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+                                            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+                                            : 'http://localhost:3000'; // Default for local development
+                                        const url = new URL(`/api/v1/result/${e._id}`, baseUrl).toString();
+                                        const res = await fetch(
+                                            url,
+                                            {
+                                                method: "DELETE",
+                                            }
                                         );
-                                        if (res.status === 200) {
+                                        if (res.ok) {
                                             const afterDelete = chartAll.filter(advertise => advertise._id !== e._id)
                                             updatedAdArray([...afterDelete], 'ALL_RESULT_SATTA')
 
+                                        } else {
+                                            const errorBody = await res.text();
+                                            throw new Error(`Failed to delete record: ${res.status} ${res.statusText} - ${errorBody}`);
                                         }
                                     } catch (error) {
                                         console.log(error);
+                                        alert("Something went wrong");
                                     }
                                 }}   > Delete</button>
                             </div>

@@ -1,119 +1,170 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import useAdminStore from "../../store/adminStore"; // Adjust path as needed
+import useAdminStore from "../../store/adminStore";
+import dynamic from 'next/dynamic';
+import { useRouter } from "next/navigation";
+
+// Dynamically import ReactQuill to avoid SSR issues
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+import 'react-quill-new/dist/quill.snow.css';
 
 const ImportantFact = () => {
+    const router = useRouter();
     const {
         isLoading,
         importantFacts,
         fetchImportantFacts,
         addImportantFact,
-        updateExistingImportantFact,
         removeImportantFact,
     } = useAdminStore();
 
-    const initialState = {
-        importantFactSatta: "",
-    };
-    const [post, setPost] = useState(false);
-    const [edit, setEdit] = useState("")
+    const initialState = { importantFactSatta: "" };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState(initialState);
 
     useEffect(() => {
         fetchImportantFacts();
     }, [fetchImportantFacts]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+    const handleQuillChange = (content) => {
+        setFormData({ ...formData, importantFactSatta: content });
     };
+
+    // Updated to navigate to the edit page
+    const handleEditClick = (item) => {
+        router.push(`/admin/important-fact/edit/${item._id}`);
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this item?")) {
+            await removeImportantFact(id);
+        }
+    };
+
+    // This now only handles ADDING a new fact
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            if (edit === "") {
-                await addImportantFact(formData);
-                setFormData(initialState);
-                setPost(false);
-                setEdit("");
-            } else {
-                await updateExistingImportantFact(edit, formData);
-                setFormData(initialState);
-                setPost(false);
-                setEdit("");
-            }
+            await addImportantFact(formData);
+            closeModal();
         } catch (error) {
             alert("Something went wrong");
             console.error(error);
         }
     };
 
-    if (isLoading) {
-        return <div>Loading Important Facts...</div>;
-    }
+    const openModal = () => {
+        setFormData(initialState);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // This modal is now only for CREATING new facts
+    const renderCreateModal = () => {
+        if (!isModalOpen) return null;
+
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+                <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-3xl relative">
+                    <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-2xl">&times;</button>
+                    <form onSubmit={handleSubmit}>
+                        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Add Important Fact</h2>
+                        <div className="mb-4 quill-container">
+                            <ReactQuill
+                                theme="snow"
+                                value={formData.importantFactSatta}
+                                onChange={handleQuillChange}
+                                modules={{
+                                    toolbar: [
+                                        [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                                        [{size: []}],
+                                        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                        [{'list': 'ordered'}, {'list': 'bullet'}, 
+                                         {'indent': '-1'}, {'indent': '+1'}],
+                                        ['link', 'image'],
+                                        ['clean']
+                                    ],
+                                }}
+                            />
+                        </div>
+                        <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    };
 
     return (
-        <>  {post && <div style={{ background: "rgba(0,0,0,0.6)" }} className="position-fixed start-0  w-100 h-100 top-0 d-flex justify-content-center align-items-center py-3 px-5 rounded">
-            <form onSubmit={handleSubmit} className="col-md-6 p-5 bg-body position-relative rounded">
-                <button style={{ right: "3px", top: "3px", border: "1px solid var(--myTheme-color)", color: "var(--myTheme-color)" }} className="position-absolute   px-2   bg- rounded-pill " onClick={() => setPost(false)} > X </button>
-                <div className="form-group">
-                    <label htmlFor="importantFactSatta">Satta King Important Fact </label>
-                    <textarea
-                        className="form-control"
-                        id="importantFactSatta"
-                        name="importantFactSatta"
-                        rows="4"
-                        value={formData.importantFactSatta}
-                        onChange={handleChange}
-
-                    ></textarea>
-                </div>
-
-                <button
-                    style={{ background: "var(--myTheme-color)" }}
-                    type="submit"
-                    className="border-0 px-5 py-2 rounded text-white mt-3"
-                >
-                    Submit
+        <>
+        <style jsx global>{`
+            .quill-container .ql-editor {
+                min-height: 200px;
+                background-color: #fff;
+                color: #000;
+            }
+            .quill-container .ql-toolbar {
+                background-color: #f3f4f6;
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
+            }
+            .dark .quill-container .ql-editor {
+                background-color: #4b5563;
+                color: #fff;
+            }
+            .dark .quill-container .ql-toolbar {
+                 background-color: #374151;
+                 border-color: #4b5563;
+            }
+            .dark .quill-container .ql-toolbar .ql-stroke {
+                stroke: #fff;
+            }
+            .dark .quill-container .ql-toolbar .ql-fill {
+                fill: #fff;
+            }
+            .dark .quill-container .ql-toolbar .ql-picker-label {
+                color: #fff;
+            }
+        `}</style>
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+            {renderCreateModal()}
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Manage Important Facts</h1>
+                <button onClick={openModal} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                    + Add New
                 </button>
-            </form>
-        </div>}
-            {!post && <button style={{ border: "1px solid blue" }} className="btn " onClick={() => { setPost(true); setEdit(""); setFormData(initialState) }}     > Post</button>}
-            <div>
-                {importantFacts && importantFacts.map((e, i) => {
-                    return (
-                        <div style={{ border: "4px solid var(--myTheme-color)" }} className='  py-4 px-5 rounded-2 m-auto my-2 d-flex' key={i}>
-                            <div className="d-flex flex-column w-100">
-
-                                <h6 className=''> {e.importantFactSatta} </h6>
-
-                                <p style={{ color: "red" }} className='fw-bold'> {e.name} </p>
-                            </div>
-                            <div className="d-flex gap-1 w-25 align-items-center">
-                                <button className="btn btn-sm btn-success w-50" onClick={() => {
-                                    setPost(true);
-                                    setEdit(e._id)
-                                    setFormData({
-                                        ...formData,
-
-                                        importantFactSatta: e.importantFactSatta
-
-                                    });
-
-                                }}    >Edit</button>
-                                <button className="btn btn-sm btn-danger w-50" onClick={() => removeImportantFact(e._id)}   > Delete</button>
-                            </div>
-
-                        </div>
-                    );
-                })}
             </div>
+
+            {isLoading ? (
+                <div className="text-center">Loading...</div>
+            ) : (
+                <div className="space-y-4">
+                    {importantFacts && importantFacts.length > 0 ? importantFacts.map((item) => (
+                        <div key={item._id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow relative min-h-[80px]">
+                            <div className="absolute top-3 right-3 flex gap-2">
+                                <button onClick={() => handleEditClick(item)} className="bg-orange-500 text-white p-2 rounded-full hover:bg-orange-600 transition-colors text-xs w-16 h-8 flex items-center justify-center">Edit</button>
+                                <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors text-xs w-16 h-8 flex items-center justify-center">Delete</button>
+                            </div>
+                            <div
+                                className="prose dark:prose-invert max-w-none pr-24"
+                                dangerouslySetInnerHTML={{ __html: item.importantFactSatta }}
+                            />
+                        </div>
+                    )) : (
+                        <p className="text-center col-span-full">No important facts found.</p>
+                    )}
+                </div>
+            )}
+        </div>
         </>
     );
 };
 
 export default ImportantFact;
+

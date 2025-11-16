@@ -1,41 +1,49 @@
 "use client";
 import React, { useRef } from "react";
 
-const ResultDisplay = ({ data }) => {
+const ResultDisplay = ({ data, resultOrder }) => {
   const tableContainerRef = useRef(null);
+
+  // Convert resultOrder object → array with key included
+  const normalizedOrder = Object.entries(resultOrder || {}).map(
+    ([key, value]) => ({
+      key,
+      ...value,
+    })
+  );
 
   const formatNumber = (number) => {
     if (number !== null && !isNaN(number)) {
       return parseInt(number).toString().padStart(2, "0");
     }
-    return "";
+    return "✱";
   };
 
-  const handleScroll = (direction) => {
-    if (tableContainerRef.current) {
-      if (direction === "right") {
-        tableContainerRef.current.scrollLeft += tableContainerRef.current.offsetWidth;
-      } else {
-        tableContainerRef.current.scrollLeft -= tableContainerRef.current.offsetWidth;
-      }
-    }
-  };
-
-  const tableHeaders = [
+  // Generate the dynamic table headers
+  const dynamicTableHeaders = [
     { id: "date", label: "Date", minWidth: "100px" },
-    { id: "disawer", label: "DISAWER", minWidth: "100px" },
-    { id: "faridabad", label: "FARIDABAD", minWidth: "100px" },
-    { id: "gaziyabad", label: "GAZIYABAD", minWidth: "100px" },
-    { id: "gali", label: "GALI", minWidth: "100px" },
-    { id: "delhiBazar", label: "DELHI BAZAR", minWidth: "170px" },
-    { id: "shreeGanesh", label: "SHREE GANESH", minWidth: "170px" },
+
+    ...normalizedOrder
+      .filter((g) => g.isVerified)
+      .sort((a, b) => a.order - b.order)
+      .map((g) => ({
+        id: g.key,
+        label: g.name, // <-- FIXED (no uppercase)
+        minWidth: "100px",
+      })),
   ];
 
   return (
     <div className="w-full overflow-hidden rounded-lg shadow-md border border-white">
       {/* Caption bar */}
       <div className="bg-[#f9b404] text-black font-bold text-center py-3 text-lg">
-        Monthly Satta King Result Chart of November 2025 for DISAWAR, FARIDABAD, GAZIYABAD, GALI
+        Monthly Satta King Result Chart of{" "}
+        {data?.month
+          ? new Date(data.year, data.month - 1).toLocaleString("en-US", {
+              month: "long",
+            })
+          : "Loading"}{" "}
+        {data?.year || ""}
       </div>
 
       {/* Scrollable table */}
@@ -43,9 +51,9 @@ const ResultDisplay = ({ data }) => {
         <table className="w-full border-collapse text-white">
           <thead>
             <tr>
-              {tableHeaders.map((header) => (
+              {dynamicTableHeaders.map((header, index) => (
                 <th
-                  key={header.id}
+                  key={index}
                   className="bg-black border border-white text-sm font-bold px-4 py-2 text-center"
                   style={{ minWidth: header.minWidth }}
                 >
@@ -59,7 +67,7 @@ const ResultDisplay = ({ data }) => {
             {(!data || !data.resultList || data.resultList.length === 0) && (
               <tr>
                 <td
-                  colSpan={tableHeaders.length}
+                  colSpan={dynamicTableHeaders.length}
                   className="text-center py-4 text-red-500 bg-[#002D5E]"
                 >
                   No results found.
@@ -77,24 +85,28 @@ const ResultDisplay = ({ data }) => {
                     style={{
                       opacity: 0,
                       transform: "translateY(20px)",
-                      animation: `fadeInUp 0.3s ease-out forwards ${index * 0.05}s`,
+                      animation: `fadeInUp 0.3s ease-out forwards ${
+                        index * 0.05
+                      }s`,
                       background: "linear-gradient(#002D5E, #004C99)",
                     }}
                   >
+                    {/* Date cell */}
                     <td className="text-center px-4 py-2 border border-white font-semibold">
                       {`${String(row.day).padStart(2, "0")}-${new Date(
-                        2025,
+                        data.year,
                         data.month - 1,
                         row.day
                       ).toLocaleDateString("en-US", { weekday: "short" })}`}
                     </td>
 
-                    {tableHeaders.slice(1).map((header) => (
+                    {/* Dynamic game result columns */}
+                    {dynamicTableHeaders.slice(1).map((header) => (
                       <td
                         key={header.id}
                         className="text-center px-4 py-2 border border-white font-semibold"
                       >
-                        {formatNumber(row[header.id]) || "✱"}
+                        {formatNumber(row[header.id])}
                       </td>
                     ))}
                   </tr>

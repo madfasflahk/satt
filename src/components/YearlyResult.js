@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const YearlyResult = () => {
+const YearlyResult = ({resultOrder}) => {
   const router = useRouter();
   const [year, setYear] = useState("");
 

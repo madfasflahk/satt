@@ -1,14 +1,19 @@
-import axios from "axios";
 import React from "react";
 
-const getCurrentResult = async (url) => {
+const getCurrentResult = async () => {
   try {
-    const response = await axios.get(url, {
-      params: { cache: "no-cache" },
+   
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/alterNative`;
+    const response = await fetch(url, {
+      cache: "no-cache",
       headers: { "Content-Type": "application/json" },
     });
 
-    const responseData = response.data;
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Failed to fetch data: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+    const responseData = await response.json();
     return responseData;
   } catch (error) {
     console.error("Error in getCurrentResult:", error);
@@ -17,9 +22,7 @@ const getCurrentResult = async (url) => {
 };
 
 const AlterNative = async () => {
-  const alterNative = await getCurrentResult(
-    `${process.env.NEXT_PUBLIC_API_URL}/alterNative`
-  );
+  const alterNative = await getCurrentResult();
 
   return (
     <div className="bg-gradient-to-r from-[#f44305] via-[#f47b1f] to-[#f8d12f] py-10 px-4">
