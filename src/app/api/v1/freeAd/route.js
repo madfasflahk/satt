@@ -1,5 +1,7 @@
-import dbConnect from '@/lib/db';
-import FreeAd from '@/models/freeFreeSattaKingBlank';
+
+
+import dbConnect from '../../../../lib/db';
+import FreeAd from '../../../../models/freeFreeSattaKingBlank';
 import { getFreeAdsFromDb } from '@/lib/data/freeAd';
 import { NextResponse } from 'next/server';
 

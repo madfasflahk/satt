@@ -1,5 +1,7 @@
-import dbConnect from '@/lib/db';
-import SattaKingRecordChartjs from '@/models/SattaKingRecordChartjs';
+
+import dbConnect from '../../../../lib/db';
+import SattaKingRecordChartjs from '../../../../models/SattaKingRecordChartjs';
+
 import createError from '@/util/createError';
 import { NextResponse } from 'next/server';
 

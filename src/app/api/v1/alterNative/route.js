@@ -1,5 +1,7 @@
-import dbConnect from '@/lib/db';
-import SattaKingAlterNative from '@/models/alterNativeSattaKing';
+
+
+import dbConnect from '../../../../lib/db';
+import SattaKingAlterNative from '../../../../models/SattaKingAlterNative';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {

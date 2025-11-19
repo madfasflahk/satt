@@ -1,5 +1,5 @@
-import dbConnect from '@/lib/db';
-import Notice from '@/models/NoticeBoard';
+import dbConnect from '../../../../../lib/db';
+import NoticeBoard from '../../../../../models/NoticeBoard';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request, { params }) {

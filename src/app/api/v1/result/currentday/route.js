@@ -1,5 +1,6 @@
-import dbConnect from '@/lib/db';
-import SattaKingRecordChartjs from '@/models/SattaKingRecordChartjs';
+
+import dbConnect from '../../../../../lib/db';
+import SattaKingRecordChartjs from '../../../../../models/SattaKingRecordChartjs';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

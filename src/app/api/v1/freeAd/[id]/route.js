@@ -1,5 +1,5 @@
-import dbConnect from '@/lib/db';
-import FreeAd from '@/models/freeFreeSattaKingBlank';
+import dbConnect from '../../../../../lib/db';
+import FreeAd from '../../../../../models/freeFreeSattaKingBlank';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request, { params }) {

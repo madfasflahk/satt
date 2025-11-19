@@ -1,5 +1,9 @@
-import dbConnect from '@/lib/db';
-import SattaKingResultOrder from '@/models/resultmasterModel';
+
+
+
+import dbConnect from '../../../../lib/db';
+import SattaKingResultOrder from '../../../../models/SattaKingResultOrder';
+
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
