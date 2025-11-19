@@ -2,7 +2,32 @@ export const revalidate = 0; // disable ISR to prevent pre-render DB issues
 export const dynamic = "force-dynamic"; // always run on server
 export const fetchCache = "force-no-store"; // no caching
 
-import { getCurrentDay } from "@/lib/data/freeAd";
+export async function getCurrentDay() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : "http://localhost:3000";
+
+    const url = `${baseUrl}/api/v1/result/currentday`;
+
+    const response = await fetch(url, {
+      next: { revalidate: 30 },     // ⭐ IMPORTANT FIX
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(
+        `Failed to fetch: ${response.status} ${response.statusText} - ${errorBody}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in getCurrentDay:", error);
+    throw error;
+  }
+}
 
 export default async function CurrentResult({ resultOrder }) {
   const data = await getCurrentDay();

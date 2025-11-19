@@ -23,104 +23,60 @@ export async function POST(request) {
     console.log("Received resultList:", resultList);
 
     if (!resultList || resultList.length === 0) {
-      const error = createError(400, "Result list is required");
-      return NextResponse.json({ message: error.message }, { status: error.status });
+      return NextResponse.json(
+        { message: "Result list is required" },
+        { status: 400 }
+      );
     }
 
-    // ---------------------------------------
-    // VALIDATE REQUIRED HEADERS
-    // ---------------------------------------
-    const requiredKeys = [
-      "day",
-      "delhiLuckyBazar",
-      "disawer",
-      "faridabad",
-      "gaziyabad",
-      "kolkataKing",
-      "gali",
-      "delhiBazar",
-      "shreeGanesh",
-      "luckpoti",
-      "sreeRam",
-      "dlb",
-    ];
-
-    const hasRequiredKeys = requiredKeys.every((key) => key in resultList[0]);
-
-    if (!hasRequiredKeys) {
-      const error = createError(400, "File does not match with expected headings");
-      return NextResponse.json({ message: error.message }, { status: error.status });
+    // ---- Validate only day ----
+    if (!("day" in resultList[0])) {
+      return NextResponse.json(
+        { message: "'day' field is required" },
+        { status: 400 }
+      );
     }
 
-    // ---------------------------------------
-    // ADD TIMESTAMP FOR EACH RESULT
-    // ---------------------------------------
+    // ----- Add timestamp to each result -----
     for (const result of resultList) {
-      const { day } = result;
-      result.DateTime = dateToMilliseconds(day, month, year);
+      result.DateTime = dateToMilliseconds(result.day, month, year);
     }
 
-    // ---------------------------------------
-    // CHECK IF YEAR-MONTH DOCUMENT EXISTS
-    // ---------------------------------------
-    const existingRecord = await SattaKingRecordChartjs.findOne({
-      year,
-      month,
-    });
+    const existingRecord = await SattaKingRecordChartjs.findOne({ year, month });
 
     if (existingRecord) {
-      // ---------------------------------------
-      // UPDATE OR INSERT EACH DAY
-      // ---------------------------------------
+      // ---- Update or Insert ----
       for (const result of resultList) {
         const existingDay = existingRecord.resultList.find(
           (entry) => entry.day === result.day
         );
 
         if (existingDay) {
-          // -------- UPDATE SAME DAY --------
-          await SattaKingRecordChartjs.updateOne(
-            { year, month, "resultList.day": result.day },
-            {
-              $set: {
-                "resultList.$.delhiLuckyBazar": result.delhiLuckyBazar,
-                "resultList.$.disawer": result.disawer,
-                "resultList.$.faridabad": result.faridabad,
-                "resultList.$.gaziyabad": result.gaziyabad,
-                "resultList.$.kolkataKing": result.kolkataKing,
-                "resultList.$.gali": result.gali,
-                "resultList.$.delhiBazar": result.delhiBazar,
-                "resultList.$.shreeGanesh": result.shreeGanesh,
-                "resultList.$.luckpoti": result.luckpoti,
-                "resultList.$.sreeRam": result.sreeRam,
-                "resultList.$.dlb": result.dlb,
-                "resultList.$.DateTime": result.DateTime,
-              },
+          // -------- PARTIAL UPDATE --------
+          for (const key in result) {
+            if (result[key] !== undefined) {
+              existingDay[key] = result[key];
             }
-          );
+          }
         } else {
-          // -------- INSERT NEW DAY --------
-          await SattaKingRecordChartjs.updateOne(
-            { year, month },
-            { $push: { resultList: result } }
-          );
+          // new day insert
+          existingRecord.resultList.push(result);
         }
       }
+
+      await existingRecord.save();
     } else {
-      // ---------------------------------------
-      // CREATE NEW MONTH DOCUMENT
-      // ---------------------------------------
-      const newRecord = new SattaKingRecordChartjs({ year, month, resultList });
-      await newRecord.save();
+      // Create new month doc
+      await SattaKingRecordChartjs.create({ year, month, resultList });
     }
 
     return NextResponse.json("Record updated successfully", { status: 200 });
-
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
 
 export async function GET(request) {
   await dbConnect();

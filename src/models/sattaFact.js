@@ -1,19 +1,16 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
-const factSchema = new mongoose.Schema({
+const factSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    about: { type: String, required: true },
+    fees: { type: String, required: true },
+    name: { type: String, required: true },
+    number: { type: String, required: true },
+    validation: { type: Boolean, default: false },
+    status: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
 
-   title: String,
-   
-   about: String,
-   fees:String,
-   name: String,
-   number: Number,
-   validation: {
-      type: Boolean,
-      default: false
-   }
-
-}, { timestamps: true })
-
-const Fact = mongoose.models.Fact || mongoose.model("fact", factSchema)
-module.exports = Fact;
+export default mongoose.models.Fact || mongoose.model("Fact", factSchema);

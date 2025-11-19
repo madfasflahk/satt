@@ -1,35 +1,42 @@
-import dbConnect from '@/lib/db';
-import Fact from '@/models/sattaFact'; // Assuming models are in src/models
-import { NextResponse } from 'next/server';
+import dbConnect from '../../../../lib/db';
+import { NextResponse } from "next/server";
+import Fact from '../../../../models/sattaFact';
 
-export async function POST(request) {
-  await dbConnect();
+export async function GET(req) {
   try {
-    const body = await request.json();
-    const newFact = new Fact(body);
-    const savedFact = await newFact.save();
-    return NextResponse.json(savedFact, { status: 200 });
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const admin = searchParams.get("admin");
+
+    let facts;
+    if (admin) {
+      facts = await Fact.find();
+    } else {
+      facts = await Fact.find({ validation: true });
+    }
+    console.log(facts);
+    return NextResponse.json(facts, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error creating fact' }, { status: 500 });
+    console.error("Error in GET /api/v1/fact:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
-export async function GET(request) {
-  await dbConnect();
+export async function POST(req) {
   try {
-    const { searchParams } = new URL(request.url);
-    const admin = searchParams.get('admin');
-    let query = {};
-    if (admin === '1') {
-      query = {};
-    } else {
-      query = { validation: true };
-    }
-    const facts = await Fact.find(query).sort({ updatedAt: -1 });
-    return NextResponse.json(facts, { status: 200 });
+    await dbConnect();
+    const body = await req.json();
+    const newFact = new Fact(body);
+    await newFact.save();
+    return NextResponse.json(newFact, { status: 201 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error fetching facts' }, { status: 500 });
+    console.error("Error in POST /api/v1/fact:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

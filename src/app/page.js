@@ -8,11 +8,13 @@ import AlterNative from '../components/AlterNative';
 import YearlyResult from '../components/YearlyResult';
 import Footer from '../components/Footer';
 import Image from 'next/image';
-// import CurrentResult  from '@/components/GetCurrentResult';
+import CurrentResult  from '@/components/GetCurrentResult';
 import Logo from '@/components/Logo';
+import WhatsAppChat from '@/components/WhatsAppChat';
 
 import { getFreeAdsFromDb,GetResultOrder } from '@/lib/data/freeAd';
 
+export const dynamic = 'force-dynamic';
 
 const HomePage = async () => {
 
@@ -82,7 +84,7 @@ const HomePage = async () => {
 
 
 
-        {/* <CurrentResult resultOrder={resultOrder} /> */}
+        <CurrentResult resultOrder={resultOrder} />
 
 
         {freeAd.slice(-1).map((e) => (
@@ -162,6 +164,7 @@ const HomePage = async () => {
       </div>
       
       <Footer />
+      <WhatsAppChat />
     </>
   );
 };

@@ -5,23 +5,27 @@ const getCurrentResult = async () => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000'; // Default for local development
+      : 'http://localhost:3000';
+
     const url = new URL(`/api/v1/importantFactSatta`, baseUrl).toString();
+
     const response = await fetch(url, {
-      cache: "no-cache",
+      next: { revalidate: 30 },   // ⭐ FIXED
       headers: { "Content-Type": "application/json" },
     });
+
     if (!response.ok) {
       const errorBody = await response.text();
       throw new Error(`Failed to fetch data: ${response.status} ${response.statusText} - ${errorBody}`);
     }
-    const data = await response.json();
-    return data;
+
+    return await response.json();
   } catch (error) {
     console.error("Error in getCurrentResult:", error);
     throw error;
   }
 };
+
 
 const Importantfact = async () => {
   const importantFact = await getCurrentResult();
