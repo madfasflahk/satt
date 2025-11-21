@@ -1,4 +1,3 @@
-
 import dbConnect from '../../../../lib/db';
 import ImportantFactAboutSatta from '../../../../models/ImportantFactAboutSatta';
 import { NextResponse } from 'next/server';
@@ -16,7 +15,7 @@ export async function POST(request) {
   }
 }
 
-export async function GET() {
+export async function GET(request) {
   await dbConnect();
   try {
     const facts = await ImportantFactAboutSatta.find();

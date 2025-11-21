@@ -82,27 +82,30 @@ export async function POST(request) {
 
 export async function GET(request) {
   await dbConnect();
+
   try {
     const { searchParams } = new URL(request.url);
-    const year = searchParams.get('year');
-    const month = parseInt(searchParams.get('month'));
-    let page = parseInt(searchParams.get('page')) || 1;
-    let limit = parseInt(searchParams.get('limit')) || 10;
-    let skip = (page - 1) * limit;
+    const year = searchParams.get("year");
+    const month = parseInt(searchParams.get("month"));
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
+
+    let chart;
 
     if (year && month) {
-        const chart = await SattaKingRecordChartjs.findOne({ year: year, month: month });
-        return NextResponse.json(chart, { status: 200 });
+      chart = await SattaKingRecordChartjs.findOne({ year, month });
     } else {
-        const chart = await SattaKingRecordChartjs.find().sort({ updatedAt: -1 }).select('-statusHistory -Comment')
-            .skip(skip)
-            .limit(limit)
-            .exec();
-        return NextResponse.json(chart, { status: 200 });
+      chart = await SattaKingRecordChartjs.find()
+        .sort({ updatedAt: -1 })
+        .select("-statusHistory -Comment")
+        .skip(skip)
+        .limit(limit);
     }
 
+    return NextResponse.json(chart || [], { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
