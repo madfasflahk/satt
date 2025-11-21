@@ -14,14 +14,26 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Error creating important fact' }, { status: 500 });
   }
 }
-
-export async function GET(request) {
-  await dbConnect();
+export async function GET(req) {
   try {
-    const facts = await ImportantFactAboutSatta.find();
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const admin = searchParams.get("admin");
+
+    let facts;
+    if (admin) {
+      facts = await ImportantFactAboutSatta.find();
+    } else {
+      facts = await ImportantFactAboutSatta.find({ validation: true });
+    }
+    console.log(facts);
     return NextResponse.json(facts, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error fetching important facts' }, { status: 500 });
+    console.error("Error in GET /api/v1/fact:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
+
