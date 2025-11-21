@@ -1,6 +1,6 @@
 import dbConnect from '../../../../../lib/db';
-import SattaKingAlterNative from '../../../../models/alterNativeSattaKing';
 import { NextResponse } from "next/server";
+import SattaKingAlterNative from '../../../../../models/alterNativeSattaKing';
 
 export async function PUT(request, { params }) {
   await dbConnect();
