@@ -1,10 +1,8 @@
-"use client"
-import React, { useEffect, useState, useCallback } from 'react';
+// components/CurrentDay.js
+import React from 'react';
 import ResultDisplay from './ResultDisplay';
 import YearMonthSelector from './YearMonthSelector';
-import useCurrentDayStore from '@/store/useCurrentDayStore';
 
-// Convert order object → array
 const normalizeOrderConfig = (orderObj) => {
     if (!orderObj || typeof orderObj !== "object") return [];
     return Object.keys(orderObj).map(key => ({
@@ -13,14 +11,12 @@ const normalizeOrderConfig = (orderObj) => {
     }));
 };
 
-// Process single result
 const processSingleResult = (result, orderConfig) => {
     if (!result || !Array.isArray(orderConfig) || orderConfig.length === 0) {
         return result;
     }
 
     const processed = { ...result };
-
     const verifiedGames = orderConfig
         .filter(g => g.isVerified)
         .sort((a, b) => a.order - b.order);
@@ -35,78 +31,48 @@ const processSingleResult = (result, orderConfig) => {
     return processed;
 };
 
-const CurrentDay = ({resultOrder}) => {
-    const [localResultOrder, setLocalResultOrder] = useState(resultOrder);
-    const [currentDayData, setCurrentDayData] = useState([]);
+// Remove "use client" and make it async
+const CurrentDay = async ({ resultOrder }) => {
+    // Fetch data on server
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/result?year=${year}&month=${month}`, {
+            cache: 'no-store'
+        });
 
-    const { setCurrentDays } = useCurrentDayStore();
+        if (!res.ok) throw new Error("Failed result fetch");
 
-    const handleDateChange = useCallback(async (year, month) => {
-        if (!localResultOrder) return;
+        const data = await res.json();
 
-        try {
-            
+        const processedList = data.resultList.map(r =>
+            processSingleResult(r, resultOrder)
+        );
 
-            const res = await fetch(`https://satt-mu.vercel.app/api/v1/result?year=${year}&month=${month}`);
+        const finalData = { ...data, resultList: processedList };
+        const latest = processedList[processedList.length - 1];
 
-            if (!res.ok) throw new Error("Failed result fetch");
-
-            const data = await res.json();
-            console.log("Fetched current day result:", data);
-
-            const processedList = data.resultList.map(r =>
-                processSingleResult(r, localResultOrder)
-            );
-
-            const finalData = { ...data, resultList: processedList };
-            setCurrentDayData(finalData);
-
-            const latest = processedList[processedList.length - 1];
-            latest?.day === new Date().getDate()
-                ? setCurrentDays(latest)
-                : setCurrentDays(null);
-
-        } catch (err) {
-            console.log(err);
-        }
-    }, [localResultOrder]);
-
-    useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                
-
-                const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`);
-                if (!res.ok) throw new Error("Failed order fetch");
-
-                const data = await res.json();
-                console.log("Fetched result order:", data);
-
-                const normalized = normalizeOrderConfig(data);
-                setLocalResultOrder(normalized);
-            } catch (err) {
-                console.error("Error fetching order:", err);
-            }
-        };
-
-        fetchOrder();
-    }, []);
-
-    useEffect(() => {
-        if (localResultOrder) {
-            handleDateChange(new Date().getFullYear(), new Date().getMonth() + 1);
-        }
-    }, [localResultOrder]);
-
-    return (
-        <div className="my-3 shadow-lg text-white rounded">
-            <div className="flex mb-2 justify-center items-center gap-4">
-                <YearMonthSelector onDateChange={handleDateChange} />
+        return (
+            <div className="my-3 shadow-lg text-white rounded">
+                <div className="flex mb-2 justify-center items-center gap-4">
+                    <YearMonthSelector 
+                        initialYear={year} 
+                        initialMonth={month}
+                    />
+                </div>
+                <ResultDisplay data={finalData} resultOrder={resultOrder} />
             </div>
-
-            <ResultDisplay data={currentDayData} resultOrder={localResultOrder} />
-        </div>
-    );
+        );
+    } catch (err) {
+        console.error("Error in CurrentDay:", err);
+        return (
+            <div className="my-3 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                Failed to load current day results
+            </div>
+        );
+    }
 };
 
 export default CurrentDay;
