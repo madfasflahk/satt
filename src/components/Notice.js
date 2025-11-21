@@ -2,11 +2,8 @@ import React from 'react';
 
 const getCurrentResult = async () => {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-            : 'http://localhost:3000'; // Default for local development
-        const url = new URL(`/api/v1/notice`, baseUrl).toString();
-        const response = await fetch(url, {
+        
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice`, {
             cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' }
         });

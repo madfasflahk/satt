@@ -1,11 +1,8 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'; // Default for local development
+
 
 export const getAllFreeAds = async () => {
     try {
-        const url = new URL(`/api/v1/freeAd?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all free ads: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -19,8 +16,7 @@ export const getAllFreeAds = async () => {
 
 export const getFreeAdById = async (id) => {
     try {
-        const url = new URL(`/api/v1/freeAd/${id}?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch free ad with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -34,8 +30,7 @@ export const getFreeAdById = async (id) => {
 
 export const createFreeAd = async (freeAdData) => {
     try {
-        const url = new URL(`/api/v1/freeAd`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +50,7 @@ export const createFreeAd = async (freeAdData) => {
 
 export const updateFreeAd = async (id, freeAdData) => {
     try {
-        const url = new URL(`/api/v1/freeAd/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +70,7 @@ export const updateFreeAd = async (id, freeAdData) => {
 
 export const deleteFreeAd = async (id) => {
     try {
-        const url = new URL(`/api/v1/freeAd/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

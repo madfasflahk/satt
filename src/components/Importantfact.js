@@ -3,13 +3,9 @@ import React from "react";
 
 const getCurrentResult = async () => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000';
+    
 
-    const url = new URL(`/api/v1/importantFactSatta`, baseUrl).toString();
-
-    const response = await fetch(url, {
+    const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta`, {
       next: { revalidate: 30 },   // ⭐ FIXED
       headers: { "Content-Type": "application/json" },
     });

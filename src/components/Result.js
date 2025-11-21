@@ -85,12 +85,9 @@ const Result = () => {
         };
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                : 'http://localhost:3000'; // Default for local development
-            const url = new URL(`/api/v1/result`, baseUrl).toString();
+            
             const res = await fetch(
-                url,
+                `https://satt-mu.vercel.app/api/v1/result`,
                 {
                     method: "POST",
                     headers: {
@@ -334,11 +331,8 @@ const Result = () => {
 
 
                             try {
-                                const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                                    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                                    : 'http://localhost:3000'; // Default for local development
-                                const url = new URL(`/api/v1/result`, baseUrl).toString();
-                                const response = await fetch(url,
+                                
+                                const response = await fetch(`https://satt-mu.vercel.app/api/v1/result`,
                                     {
                                         method: "POST",
                                         headers: {
@@ -429,12 +423,9 @@ const Result = () => {
                                 }}    >Edit</button> */}
                                 <button className="btn btn-sm btn-danger w-50" onClick={async () => {
                                     try {
-                                        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                                            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                                            : 'http://localhost:3000'; // Default for local development
-                                        const url = new URL(`/api/v1/result/${e._id}`, baseUrl).toString();
+                                        
                                         const res = await fetch(
-                                            url,
+                                            `https://satt-mu.vercel.app/api/v1/result/${e._id}`,
                                             {
                                                 method: "DELETE",
                                             }

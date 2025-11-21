@@ -1,11 +1,8 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'; // Default for local development
+
 
 export const getAllResults = async (limit = 10, page = 1) => {
     try {
-        const url = new URL(`/api/v1/result?limit=${limit}&page=${page}&admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/result?limit=${limit}&page=${page}&admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all results: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -19,8 +16,7 @@ export const getAllResults = async (limit = 10, page = 1) => {
 
 export const getResultById = async (id) => {
     try {
-        const url = new URL(`/api/v1/result/${id}?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/result/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch result with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -34,8 +30,7 @@ export const getResultById = async (id) => {
 
 export const createResult = async (resultData) => {
     try {
-        const url = new URL(`/api/v1/result`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/result`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +50,7 @@ export const createResult = async (resultData) => {
 
 export const updateResult = async (id, resultData) => {
     try {
-        const url = new URL(`/api/v1/result/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/result/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +70,7 @@ export const updateResult = async (id, resultData) => {
 
 export const deleteResult = async (id) => {
     try {
-        const url = new URL(`/api/v1/result/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/result/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

@@ -84,11 +84,8 @@ const Result = () => {
         // Let's fetch the result order from the API to initialize resultFields
         const fetchResultOrder = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                    : 'http://localhost:3000';
-                const orderUrl = new URL(`/api/v1/resultOrder`, baseUrl).toString();
-                const orderRes = await fetch(orderUrl);
+                
+                const orderRes = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`);
                 if (orderRes.ok) {
                     const orderData = await orderRes.json();
                     // Merge fetched order with default fields, prioritizing fetched data
@@ -129,11 +126,8 @@ const Result = () => {
         // Here you would typically send the 'resultFields' state to your backend API to save the changes
         console.log("Saving updated fields:", resultFields);
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                : 'http://localhost:3000';
-            const orderUrl = new URL(`/api/v1/resultOrder`, baseUrl).toString();
-            const res = await fetch(orderUrl, {
+            
+            const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`, {
                 method: 'POST', // Assuming POST for saving/updating the order
                 headers: {
                     'Content-Type': 'application/json',

@@ -45,12 +45,9 @@ const CurrentDay = () => {
         if (!localResultOrder) return;
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                : 'http://localhost:3000';
+            
 
-            const url = `${baseUrl}/api/v1/result?year=${year}&month=${month}`;
-            const res = await fetch(url);
+            const res = await fetch(`https://satt-mu.vercel.app/api/v1/result?year=${year}&month=${month}`);
 
             if (!res.ok) throw new Error("Failed result fetch");
 
@@ -77,11 +74,9 @@ const CurrentDay = () => {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                    : 'http://localhost:3000';
+                
 
-                const res = await fetch(`${baseUrl}/api/v1/resultOrder`);
+                const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`);
                 if (!res.ok) throw new Error("Failed order fetch");
 
                 const data = await res.json();

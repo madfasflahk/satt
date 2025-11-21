@@ -4,13 +4,9 @@ export const fetchCache = "force-no-store"; // no caching
 
 export async function getCurrentDay() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : "http://localhost:3000";
+    
 
-    const url = `${baseUrl}/api/v1/result/currentday`;
-
-    const response = await fetch(url, {
+    const response = await fetch(`https://satt-mu.vercel.app/api/v1/result/currentday`, {
       next: { revalidate: 30 },
       headers: { "Content-Type": "application/json" },
     });

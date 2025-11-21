@@ -1,11 +1,8 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'; // Default for local development
+
 
 export const getAllMovements = async () => {
     try {
-        const url = new URL(`/api/v1/movement?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/movement?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all movements: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -19,8 +16,7 @@ export const getAllMovements = async () => {
 
 export const getMovementById = async (id) => {
     try {
-        const url = new URL(`/api/v1/movement/${id}?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/movement/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch movement with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -34,8 +30,7 @@ export const getMovementById = async (id) => {
 
 export const createMovement = async (movementData) => {
     try {
-        const url = new URL(`/api/v1/movement`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/movement`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +50,7 @@ export const createMovement = async (movementData) => {
 
 export const updateMovement = async (id, movementData) => {
     try {
-        const url = new URL(`/api/v1/movement/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/movement/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +70,7 @@ export const updateMovement = async (id, movementData) => {
 
 export const deleteMovement = async (id) => {
     try {
-        const url = new URL(`/api/v1/movement/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/movement/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

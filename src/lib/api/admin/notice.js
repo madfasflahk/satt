@@ -1,11 +1,8 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'; // Default for local development
+
 
 export const getAllNotices = async () => {
     try {
-        const url = new URL(`/api/v1/notice?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all notices: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -19,8 +16,7 @@ export const getAllNotices = async () => {
 
 export const getNoticeById = async (id) => {
     try {
-        const url = new URL(`/api/v1/notice/${id}?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch notice with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -34,8 +30,7 @@ export const getNoticeById = async (id) => {
 
 export const createNotice = async (noticeData) => {
     try {
-        const url = new URL(`/api/v1/notice`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +50,7 @@ export const createNotice = async (noticeData) => {
 
 export const updateNotice = async (id, noticeData) => {
     try {
-        const url = new URL(`/api/v1/notice/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +70,7 @@ export const updateNotice = async (id, noticeData) => {
 
 export const deleteNotice = async (id) => {
     try {
-        const url = new URL(`/api/v1/notice/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/notice/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

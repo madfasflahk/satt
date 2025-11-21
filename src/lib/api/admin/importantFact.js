@@ -1,6 +1,4 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'; // Default for local development
+
 
 export const getAllImportantFacts = async () => {
     try {
@@ -19,12 +17,11 @@ export const getAllImportantFacts = async () => {
 
 export const getImportantFactById = async (id) => {
     try {
-        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta/${id}`);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
         }
-        console.log('Response:', response);
         return response.json();
     } catch (error) {
         console.error(`Error fetching important fact with ID ${id}:`, error);
@@ -34,8 +31,7 @@ export const getImportantFactById = async (id) => {
 
 export const createImportantFact = async (importantFactData) => {
     try {
-        const url = new URL(`/api/v1/importantFactSatta`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +51,7 @@ export const createImportantFact = async (importantFactData) => {
 
 export const updateImportantFact = async (id, importantFactData) => {
     try {
-        const url = new URL(`/api/v1/importantFactSatta/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +71,7 @@ export const updateImportantFact = async (id, importantFactData) => {
 
 export const deleteImportantFact = async (id) => {
     try {
-        const url = new URL(`/api/v1/importantFactSatta/${id}`, baseUrl).toString();
-        const response = await fetch(url, {
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {
