@@ -4,8 +4,8 @@ const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
 
 export const getAllImportantFacts = async () => {
     try {
-        const url = new URL(`/api/v1/importantFactSatta?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+       
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all important facts: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -19,12 +19,12 @@ export const getAllImportantFacts = async () => {
 
 export const getImportantFactById = async (id) => {
     try {
-        const url = new URL(`/api/v1/importantFactSatta/${id}?admin=1`, baseUrl).toString();
-        const response = await fetch(url);
+        const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta/${id}`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
         }
+        console.log('Response:', response);
         return response.json();
     } catch (error) {
         console.error(`Error fetching important fact with ID ${id}:`, error);

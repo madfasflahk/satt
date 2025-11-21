@@ -28,7 +28,6 @@ const getCurrentResult = async () => {
 
 
 const Importantfact = async () => {
-  const importantFact = await getCurrentResult();
 
   return (
     <div className="bg-gradient-to-r from-[#f44305] via-[#f47b1f] to-[#f8d12f] py-10 px-4 rounded-xl shadow-lg">

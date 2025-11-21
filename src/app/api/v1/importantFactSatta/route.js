@@ -22,14 +22,14 @@ export async function GET(req) {
 
     let facts;
     if (admin) {
-      facts = await ImportantFactAboutSatta.find();
+      facts = await ImportantFactAboutSatta.find().limit(10).lean();
     } else {
-      facts = await ImportantFactAboutSatta.find({ validation: true });
+      facts = await ImportantFactAboutSatta.find({ validation: true }).limit(10).lean();
     }
     console.log(facts);
     return NextResponse.json(facts, { status: 200 });
   } catch (error) {
-    console.error("Error in GET /api/v1/fact:", error);
+    console.error("Error in GET /api/v1/importantFactSatta:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
