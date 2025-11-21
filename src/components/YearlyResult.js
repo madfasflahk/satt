@@ -12,6 +12,7 @@ const YearlyResult = ({resultOrder}) => {
 
   const handleNavigate = () => {
     if (year) {
+      localStorage.setItem("resultOrder", JSON.stringify(resultOrder));
       router.push(`/${year}`);
     }
   };

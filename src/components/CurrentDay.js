@@ -35,8 +35,8 @@ const processSingleResult = (result, orderConfig) => {
     return processed;
 };
 
-const CurrentDay = () => {
-    const [localResultOrder, setLocalResultOrder] = useState(null);
+const CurrentDay = ({resultOrder}) => {
+    const [localResultOrder, setLocalResultOrder] = useState(resultOrder);
     const [currentDayData, setCurrentDayData] = useState([]);
 
     const { setCurrentDays } = useCurrentDayStore();
