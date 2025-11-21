@@ -2,7 +2,7 @@
 
 
 import dbConnect from '../../../../lib/db';
-import SattaKingResultOrder from '../../../../models/SattaKingResultOrder';
+import SattaKingResultOrder from '../../../../models/resultmasterModel';
 
 import { NextResponse } from 'next/server';
 

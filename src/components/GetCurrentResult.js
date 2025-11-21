@@ -1,4 +1,4 @@
-export const revalidate = 0; // disable ISR to prevent pre-render DB issues
+export const revalidate = 60; // disable ISR to prevent pre-render DB issues
 export const dynamic = "force-dynamic"; // always run on server
 export const fetchCache = "force-no-store"; // no caching
 
@@ -11,23 +11,44 @@ export async function getCurrentDay() {
     const url = `${baseUrl}/api/v1/result/currentday`;
 
     const response = await fetch(url, {
-      next: { revalidate: 30 },     // ⭐ IMPORTANT FIX
+      next: { revalidate: 30 },
       headers: { "Content-Type": "application/json" },
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText} - ${errorBody}`
-      );
+    // ⭐ Handle 404 gracefully
+    if (response.status === 404) {
+      const data = await response.json();
+      return { success: false, message: data.message }; // "No record found for today"
     }
 
-    return await response.json();
+    // ❗ Other errors (500, 401, etc)
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(
+        `API Error: ${response.status} ${response.statusText} - ${errorBody}`
+      );
+      return {
+        success: false,
+        message: "Something went wrong",
+      };
+    }
+
+    // ✔ Success
+    const data = await response.json();
+    return {
+      success: true,
+      data,
+    };
+
   } catch (error) {
     console.error("Error in getCurrentDay:", error);
-    throw error;
+    return {
+      success: false,
+      message: "Network or Server error",
+    };
   }
 }
+
 
 export default async function CurrentResult({ resultOrder }) {
   const data = await getCurrentDay();
