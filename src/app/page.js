@@ -16,7 +16,7 @@ import WhatsAppChat from '@/components/WhatsAppChat';
 
 
 const getFreeAdsFromDb=async(admin)=>{
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/freeAd?admin=${admin}`, {
+  const res = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd?admin=${admin}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const getFreeAdsFromDb=async(admin)=>{
 } ;
 
 const GetResultOrder=async()=>{
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/resultOrder`, {
+  const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ const HomePage = async () => {
 
 
 
-        {/* {resultOrder && <CurrentDay resultOrder={resultOrder} />} */}
+        {resultOrder && <CurrentDay resultOrder={resultOrder} />}
 
         {/* {resultOrder && <YearlyResult  resultOrder={resultOrder} />} */}
         {/* <YearlyResult /> */}

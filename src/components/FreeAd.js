@@ -33,7 +33,7 @@ const FreeAd = () => {
       if (edit === "") {
 
         const res = await axios.post(
-          `${process.env.REACT_APP_API}freeAd`,
+          `https://satt-mu.vercel.app/freeAd`,
           formData
         );
         if (res.status === 200) {
@@ -46,7 +46,7 @@ const FreeAd = () => {
       } else {
 
         const res = await axios.put(
-          `${process.env.REACT_APP_API}freeAd/${edit}`,
+          `https://satt-mu.vercel.app/freeAd/${edit}`,
           formData
         );
         if (res.status === 200) {

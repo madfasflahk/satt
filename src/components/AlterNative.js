@@ -3,7 +3,7 @@ import React from "react";
 const getCurrentResult = async () => {
   try {
    
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/alterNative`;
+    const url = `https://satt-mu.vercel.app/api/v1/alterNative`;
     const response = await fetch(url, {
       cache: "no-cache",
       headers: { "Content-Type": "application/json" },

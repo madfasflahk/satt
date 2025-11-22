@@ -27,7 +27,7 @@ const ImportantNote = () => {
     try {
       if (edit === "") { // Corrected comparison operator
         const res = await axios.post(
-          `${process.env.REACT_APP_API}importantNote`,
+          `https://satt-mu.vercel.app/importantNote`,
           formData
         );
         if (res.status === 200) {
@@ -39,7 +39,7 @@ const ImportantNote = () => {
         }
       } else {
         const res = await axios.put(
-          `${process.env.REACT_APP_API}importantNote/${edit}`,
+          `https://satt-mu.vercel.app/importantNote/${edit}`,
           formData
         );
         if (res.status === 200) {

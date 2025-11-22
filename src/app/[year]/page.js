@@ -61,11 +61,10 @@ const YearPage = () => {
     const getYearlyData = async (year, orderConfig) => { // Pass orderConfig
         setResultLoad(true);
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                : 'http://localhost:3000'; // Default for local development
-            const url = new URL(`/api/v1/result?year=${year}`, baseUrl).toString();
-            const response = await fetch(url);
+           
+            const response = await fetch(`https://satt-mu.vercel.app/api/v1/result?year=${year}`,
+                { cache: 'no-store' }
+            );
             if (response.ok) {
                 const data = await response.json();
 
