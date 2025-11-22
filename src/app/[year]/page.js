@@ -11,20 +11,28 @@ const YearPage = () => {
     const [resultOrder, setResultOrder] = useState([]); // State for result order
 
     useEffect(() => {
+        if (typeof window === "undefined") return; // avoid SSR crash
+
         try {
             const stored = localStorage.getItem("resultOrder");
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed)) {
-                    setResultOrder(parsed);
-                } else {
-                    setResultOrder(parsed);
-                }
+            if (!stored) return;
+
+            let parsed;
+            try {
+                parsed = JSON.parse(stored);
+            } catch {
+                console.warn("Invalid JSON in localStorage, resetting...");
+                return;
             }
+
+            // Only if parsed is valid
+            setResultOrder(Array.isArray(parsed) ? parsed : []);
         } catch (e) {
-            console.error('Failed to load resultOrder from localStorage', e);
+            console.error("Failed to load resultOrder:", e);
         }
+
     }, []);
+
     const monthsArray = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -60,7 +68,7 @@ const YearPage = () => {
             const response = await fetch(url);
             if (response.ok) {
                 const data = await response.json();
-                
+
                 // Process each month's resultList
                 const processedData = data.map(monthData => {
                     const processedResultList = monthData.resultList.map(result => processSingleResult(result, orderConfig));
@@ -79,7 +87,7 @@ const YearPage = () => {
         }
     };
 
-    
+
 
     useEffect(() => {
         if (year && resultOrder.length > 0) { // Only call getYearlyData once year and resultOrder are available
@@ -97,7 +105,7 @@ const YearPage = () => {
 
     return (
         <>
-            
+
             <div className="container max-w-6xl mx-auto mt-8 mb-8 px-4">
                 {(!fullYearChart || fullYearChart.length === 0) ? (
                     <div className="text-center min-h-[85vh] flex items-center justify-center">
