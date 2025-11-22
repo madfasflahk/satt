@@ -188,7 +188,7 @@ const HomePage = async () => {
 
 
 
-        {resultOrder && <CurrentDay resultOrder={resultOrder} />}
+        {/* {resultOrder && <CurrentDay resultOrder={resultOrder} />} */}
 
         {/* {resultOrder && <YearlyResult  resultOrder={resultOrder} />} */}
         {/* <YearlyResult /> */}
