@@ -112,6 +112,9 @@ export default async function CurrentResult({ resultOrder }) {
           </div>
         ))}
       </div>
+      <h1 className="text=4xl">{resultOrder.delhiBazar}</h1>
+      
+      
     </div>
   );
 }
