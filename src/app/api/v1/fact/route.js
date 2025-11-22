@@ -14,7 +14,7 @@ export async function GET(req) {
     } else {
       facts = await Fact.find({ validation: true });
     }
-    console.log(facts);
+    
     return NextResponse.json(facts, { status: 200 });
   } catch (error) {
     console.error("Error in GET /api/v1/fact:", error);

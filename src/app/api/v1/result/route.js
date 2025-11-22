@@ -6,12 +6,12 @@ import createError from '@/util/createError';
 import { NextResponse } from 'next/server';
 
 function dateToMilliseconds(day, month, year) {
-    const dateString = `${year}-${month}-${day}`;
-    const date = new Date(dateString);
-    date.setHours(0, 0, 0, 0);
-    const indianTimeString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-    const indianDate = new Date(indianTimeString);
-    return indianDate.getTime();
+  const dateString = `${year}-${month}-${day}`;
+  const date = new Date(dateString);
+  date.setHours(0, 0, 0, 0);
+  const indianTimeString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const indianDate = new Date(indianTimeString);
+  return indianDate.getTime();
 }
 
 
@@ -22,7 +22,6 @@ export async function POST(request) {
   try {
     const { year, month, resultList } = await request.json();
 
-    console.log("Received resultList:", resultList);
 
     if (!resultList || resultList.length === 0) {
       return NextResponse.json(
@@ -81,20 +80,39 @@ export async function POST(request) {
 
 
 export async function GET(request) {
-  await dbConnect();
-
   try {
-    const { searchParams } = new URL(request.url);
+    // Full URL তৈরি করুন
+    const baseUrl = 'https://satt-mu.vercel.app';
+    const fullUrl = new URL(request.url, baseUrl);
+    
+    const searchParams = fullUrl.searchParams;
     const year = searchParams.get("year");
     const month = parseInt(searchParams.get("month"));
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 10;
     const skip = (page - 1) * limit;
-
+    
+    console.log("Query Params:", { year, month, page, limit, skip });
+    
     let chart;
-
     if (year && month) {
-      chart = await SattaKingRecordChartjs.findOne({ year, month });
+      chart = await SattaKingRecordChartjs.findOne({
+        $or: [
+          { year: year, month: month },
+          { year: year.toString(), month: month }
+        ]
+      });
+    } else if (year) {
+      chart = await SattaKingRecordChartjs.find({
+        $or: [
+          { year: year },
+          { year: year.toString() }
+        ]
+      })
+      .sort({ month: 1 })
+      .select("-statusHistory -Comment")
+      .skip(skip)
+      .limit(limit);
     } else {
       chart = await SattaKingRecordChartjs.find()
         .sort({ updatedAt: -1 })
@@ -102,10 +120,16 @@ export async function GET(request) {
         .skip(skip)
         .limit(limit);
     }
-
-    return NextResponse.json(chart || [], { status: 200 });
+    
+    return new Response(JSON.stringify(chart), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

@@ -65,7 +65,7 @@ const CurrentDay = ({ resultOrder }) => {
             processSingleResult(r, resultOrder)
         );
         const finalData = { ...data, resultList: processedList };
-
+        
         return <ResultDisplay data={finalData} resultOrder={resultOrder} />;
     };
 
