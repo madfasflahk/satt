@@ -124,7 +124,7 @@ const HomePage = async () => {
 
 
 
-        {/* <CurrentResult resultOrder={resultOrder} /> */}
+        <CurrentResult resultOrder={resultOrder} />
 
 
         {freeAd.slice(-1).map((e) => (
@@ -188,9 +188,9 @@ const HomePage = async () => {
 
 
 
-        {/* {resultOrder && <CurrentDay resultOrder={resultOrder} />} */}
+        {resultOrder && <CurrentDay resultOrder={resultOrder} />}
 
-        {/* {resultOrder && <YearlyResult  resultOrder={resultOrder} />} */}
+        {resultOrder && <YearlyResult  resultOrder={resultOrder} />}
         {/* <YearlyResult /> */}
 
         <div className='my-8'>
@@ -206,7 +206,7 @@ const HomePage = async () => {
       </div>
       
       <Footer />
-      <WhatsAppChat />
+      <WhatsAppChat chatData={freeAd[0]} />
     </>
   );
 };

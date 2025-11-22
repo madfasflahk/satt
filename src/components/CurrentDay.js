@@ -1,7 +1,9 @@
-// components/CurrentDay.js
-import React from 'react';
+'use client'
+import React, { useEffect } from 'react';
 import ResultDisplay from './ResultDisplay';
 import YearMonthSelector from './YearMonthSelector';
+import useCurrentDayStore from '../store/useCurrentDayStore';
+import HourglassLoader from './HourglassLoader';
 
 const normalizeOrderConfig = (orderObj) => {
     if (!orderObj || typeof orderObj !== "object") return [];
@@ -31,48 +33,50 @@ const processSingleResult = (result, orderConfig) => {
     return processed;
 };
 
-// Remove "use client" and make it async
-const CurrentDay = async ({ resultOrder }) => {
-    // Fetch data on server
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    
-    try {
-        const res = await fetch(`https://satt-mu.vercel.app/api/v1/result?year=${year}&month=${month}`, {
-            cache: 'no-store'
-        });
+const CurrentDay = ({ resultOrder }) => {
+    const { data, loading, error, fetchResults } = useCurrentDayStore();
 
-        if (!res.ok) throw new Error("Failed result fetch");
+    useEffect(() => {
+        fetchResults();
+    }, [fetchResults]);
 
-        const data = await res.json();
+    const renderContent = () => {
+        if (loading) {
+            return <HourglassLoader />;
+        }
 
-        const processedList = data.resultList.map(r =>
+        if (error) {
+            return (
+                <div className="my-3 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                    {error}
+                </div>
+            );
+        }
+
+        if (!data) {
+            return (
+                <div className="my-3 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                    No data found for the selected month and year.
+                </div>
+            );
+        }
+
+        const processedList =data.resultList &&data.resultList.length>0 &&  data.resultList.map(r =>
             processSingleResult(r, resultOrder)
         );
-
         const finalData = { ...data, resultList: processedList };
-        const latest = processedList[processedList.length - 1];
 
-        return (
-            <div className="my-3 shadow-lg text-white rounded">
-                <div className="flex mb-2 justify-center items-center gap-4">
-                    <YearMonthSelector 
-                        initialYear={year} 
-                        initialMonth={month}
-                    />
-                </div>
-                <ResultDisplay data={finalData} resultOrder={resultOrder} />
+        return <ResultDisplay data={finalData} resultOrder={resultOrder} />;
+    };
+
+    return (
+        <div className="my-3 shadow-lg text-white rounded">
+            <div className="flex mb-2 justify-center items-center gap-4">
+                <YearMonthSelector />
             </div>
-        );
-    } catch (err) {
-        console.error("Error in CurrentDay:", err);
-        return (
-            <div className="my-3 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                Failed to load current day results
-            </div>
-        );
-    }
+            {renderContent()}
+        </div>
+    );
 };
 
 export default CurrentDay;

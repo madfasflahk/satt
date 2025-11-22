@@ -1,41 +1,18 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-const WhatsAppChat = () => {
+import axios from 'axios';
+const WhatsAppChat = ({chatData}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [chatData, setChatData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
 
-  useEffect(() => {
-    const fetchChatData = async () => {
-      try {
-        const response = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          next: { revalidate: 60 },
-        });
-        const data = await response.json();
-        if (data && data.length > 0) {
-          setChatData(data[0]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch chat data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChatData();
-  }, []);
+  
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  if (loading || !chatData) {
+  if (!chatData) {
     return (
         <div
         className="fixed bottom-5 right-5 bg-white rounded-full p-3 cursor-pointer z-50"

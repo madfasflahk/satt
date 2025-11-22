@@ -68,7 +68,7 @@ export default async function CurrentResult({ resultOrder }) {
   const sortedKeys = Object.keys(resultOrder)
     .filter((key) => resultOrder[key]?.isVerified)
     .sort((a, b) => resultOrder[a].order - resultOrder[b].order);
-
+ 
   return (
     <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
       <h1 className="text-3xl font-semibold mb-6 tracking-wide text-cyan-400 drop-shadow-lg">
@@ -112,7 +112,7 @@ export default async function CurrentResult({ resultOrder }) {
           </div>
         ))}
       </div>
-      <h1 className="text=4xl">{resultOrder.delhiBazar}</h1>
+      <h1 className="text-4xl">{resultOrder.delhiBazar.name}</h1>
       
       
     </div>
