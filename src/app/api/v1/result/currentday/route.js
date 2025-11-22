@@ -2,18 +2,18 @@
 import dbConnect from '../../../../../lib/db';
 import SattaKingRecordChartjs from '../../../../../models/SattaKingRecordChartjs';
 import { NextResponse } from 'next/server';
-
 export async function GET() {
   await dbConnect();
+
   try {
-    const now = new Date();
-    const year = now.getFullYear().toString();
-    const month = now.getMonth() + 1;
+    const now = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // IST
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;  // FIX: number
     const day = now.getDate();
 
     const record = await SattaKingRecordChartjs.findOne({
       year,
-      month,  
+      month,
       "resultList.day": day
     });
 
@@ -29,3 +29,4 @@ export async function GET() {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
+
