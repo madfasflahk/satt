@@ -82,7 +82,7 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     // Full URL তৈরি করুন
-    const baseUrl = 'https://satt-mu.vercel.app';
+    const baseUrl = 'https://luckpatix.com';
     const fullUrl = new URL(request.url, baseUrl);
     
     const searchParams = fullUrl.searchParams;

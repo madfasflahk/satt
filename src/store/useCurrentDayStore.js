@@ -14,7 +14,7 @@ const useCurrentDayStore = create((set, get) => ({
     const { year, month } = get();
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`/api/v1/result?year=${year}&month=${month}`, {
+      const res = await fetch(`https://luckpatix.com/api/v1/result?year=${year}&month=${month}`, {
         cache: 'no-store',
       });
 
