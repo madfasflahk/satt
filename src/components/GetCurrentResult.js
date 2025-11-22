@@ -32,9 +32,9 @@ export async function getCurrentDay() {
     };
   }
 }
-
 export default async function CurrentResult({ resultOrder }) {
   const data = await getCurrentDay();
+
   if (!data || !data.success) {
     return (
       <div className="min-h-screen bg-black text-white p-6 flex justify-center items-center">
@@ -97,3 +97,4 @@ export default async function CurrentResult({ resultOrder }) {
     </div>
   );
 }
+

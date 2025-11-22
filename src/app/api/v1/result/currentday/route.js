@@ -13,7 +13,7 @@ export async function GET() {
 
     const record = await SattaKingRecordChartjs.findOne({
       year,
-      month,
+      month,  
       "resultList.day": day
     });
 

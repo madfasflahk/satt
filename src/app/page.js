@@ -104,10 +104,12 @@ const HomePage = async () => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 bg-white text-black font-bold py-2.5 px-5 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300 animate-blink"
                   >
-                    <img
+                    <Image
                       src="/whatsapp.png"
                       alt="WhatsApp"
                       className="w-6 h-6"
+                      width={24} // Assuming 24px based on w-6
+                      height={24} // Assuming 24px based on h-6
                     />
                     Join WhatsApp Channel
                   </a>
