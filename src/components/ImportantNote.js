@@ -27,7 +27,7 @@ const ImportantNote = () => {
     try {
       if (edit === "") { // Corrected comparison operator
         const res = await axios.post(
-          `https://satt-mu.vercel.app/importantNote`,
+          `https://www.luckpatix.com/importantNote`,
           formData
         );
         if (res.status === 200) {
@@ -39,7 +39,7 @@ const ImportantNote = () => {
         }
       } else {
         const res = await axios.put(
-          `https://satt-mu.vercel.app/importantNote/${edit}`,
+          `https://www.luckpatix.com/importantNote/${edit}`,
           formData
         );
         if (res.status === 200) {

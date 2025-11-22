@@ -87,7 +87,7 @@ const Result = () => {
         try {
             
             const res = await fetch(
-                `https://satt-mu.vercel.app/api/v1/result`,
+                `https://www.luckpatix.com/api/v1/result`,
                 {
                     method: "POST",
                     headers: {
@@ -332,7 +332,7 @@ const Result = () => {
 
                             try {
                                 
-                                const response = await fetch(`https://satt-mu.vercel.app/api/v1/result`,
+                                const response = await fetch(`https://www.luckpatix.com/api/v1/result`,
                                     {
                                         method: "POST",
                                         headers: {
@@ -425,7 +425,7 @@ const Result = () => {
                                     try {
                                         
                                         const res = await fetch(
-                                            `https://satt-mu.vercel.app/api/v1/result/${e._id}`,
+                                            `https://www.luckpatix.com/api/v1/result/${e._id}`,
                                             {
                                                 method: "DELETE",
                                             }

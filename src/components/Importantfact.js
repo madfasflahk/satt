@@ -5,7 +5,7 @@ const getCurrentResult = async () => {
   try {
     
 
-    const response = await fetch(`https://satt-mu.vercel.app/api/v1/importantFactSatta`, {
+    const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta`, {
       next: { revalidate: 30 },   // ⭐ FIXED
       headers: { "Content-Type": "application/json" },
     });

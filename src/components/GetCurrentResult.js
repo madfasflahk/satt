@@ -2,7 +2,7 @@
 export async function getCurrentDay() {
   try {
     const response = await fetch(
-      `https://satt-mu.vercel.app/api/v1/result/currentday`,
+      `https://luckpatix.com/api/v1/result/currentday`,
       {
         next: { revalidate: 30 },
         headers: { "Content-Type": "application/json" },
@@ -32,9 +32,9 @@ export async function getCurrentDay() {
     };
   }
 }
+
 export default async function CurrentResult({ resultOrder }) {
   const data = await getCurrentDay();
-  
   if (!data || !data.success) {
     return (
       <div className="min-h-screen bg-black text-white p-6 flex justify-center items-center">

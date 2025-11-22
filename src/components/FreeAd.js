@@ -33,7 +33,7 @@ const FreeAd = () => {
       if (edit === "") {
 
         const res = await axios.post(
-          `https://satt-mu.vercel.app/freeAd`,
+          `https://www.luckpatix.com/freeAd`,
           formData
         );
         if (res.status === 200) {
@@ -46,7 +46,7 @@ const FreeAd = () => {
       } else {
 
         const res = await axios.put(
-          `https://satt-mu.vercel.app/freeAd/${edit}`,
+          `https://www.luckpatix.com/freeAd/${edit}`,
           formData
         );
         if (res.status === 200) {

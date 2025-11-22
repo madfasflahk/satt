@@ -1,7 +1,7 @@
 import ResultDisplay from '../../components/ResultDisplay';
 
 const GetResultOrder = async () => {
-    const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`, {
+    const res = await fetch(`https://www.luckpatix.com/api/v1/resultOrder`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -19,10 +19,11 @@ const GetResultOrder = async () => {
 
 const getYearlyData = async (year) => {
     const response = await fetch(
-        `https://satt-mu.vercel.app/api/v1/result?year=${year}`,
+        `https://www.luckpatix.com/api/v1/result?year=${year}`,
         { cache: 'no-store' }
     );
     if (!response.ok) return null;
+    
     return response.json();
 };
 

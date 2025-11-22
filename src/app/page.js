@@ -16,7 +16,7 @@ import WhatsAppChat from '@/components/WhatsAppChat';
 
 
 const getFreeAdsFromDb=async(admin)=>{
-  const res = await fetch(`https://satt-mu.vercel.app/api/v1/freeAd?admin=${admin}`, {
+  const res = await fetch(`https://www.luckpatix.com/api/v1/freeAd?admin=${admin}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const getFreeAdsFromDb=async(admin)=>{
 } ;
 
 const GetResultOrder=async()=>{
-  const res = await fetch(`https://satt-mu.vercel.app/api/v1/resultOrder`, {
+  const res = await fetch(`https://www.luckpatix.com/api/v1/resultOrder`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
