@@ -1,7 +1,7 @@
 import ResultDisplay from '../../components/ResultDisplay';
 
 const GetResultOrder = async () => {
-    const res = await fetch(`https://www.luckpatix.com/api/v1/resultOrder`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ const GetResultOrder = async () => {
 
 const getYearlyData = async (year) => {
     const response = await fetch(
-        `https://www.luckpatix.com/api/v1/result?year=${year}`,
+        `${process.env.NEXT_PUBLIC_API_URL}result?year=${year}`,
         { cache: 'no-store' }
     );
     if (!response.ok) return null;

@@ -3,7 +3,7 @@
 export const getAllImportantFacts = async () => {
     try {
        
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantFactSatta?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all important facts: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -17,7 +17,7 @@ export const getAllImportantFacts = async () => {
 
 export const getImportantFactById = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta/${id}?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantFactSatta/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch important fact with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -31,7 +31,7 @@ export const getImportantFactById = async (id) => {
 
 export const createImportantFact = async (importantFactData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantFactSatta`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const createImportantFact = async (importantFactData) => {
 
 export const updateImportantFact = async (id, importantFactData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantFactSatta/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const updateImportantFact = async (id, importantFactData) => {
 
 export const deleteImportantFact = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantFactSatta/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantFactSatta/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

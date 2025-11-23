@@ -2,7 +2,7 @@
 
 export const getAllFreeAds = async () => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/freeAd?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}freeAd?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all free ads: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -16,7 +16,7 @@ export const getAllFreeAds = async () => {
 
 export const getFreeAdById = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/freeAd/${id}?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}freeAd/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch free ad with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -30,7 +30,7 @@ export const getFreeAdById = async (id) => {
 
 export const createFreeAd = async (freeAdData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/freeAd`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}freeAd`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const createFreeAd = async (freeAdData) => {
 
 export const updateFreeAd = async (id, freeAdData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/freeAd/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}freeAd/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const updateFreeAd = async (id, freeAdData) => {
 
 export const deleteFreeAd = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/freeAd/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}freeAd/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

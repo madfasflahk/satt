@@ -3,7 +3,7 @@ import React from "react";
 const getCurrentResult = async () => {
   try {
    
-    const url = `https://www.luckpatix.com/api/v1/alterNative`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}alterNative`;
     const response = await fetch(url, {
       cache: "no-cache",
       headers: { "Content-Type": "application/json" },

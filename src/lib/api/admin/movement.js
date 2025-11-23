@@ -2,7 +2,7 @@
 
 export const getAllMovements = async () => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/movement?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}movement?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all movements: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -16,7 +16,7 @@ export const getAllMovements = async () => {
 
 export const getMovementById = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/movement/${id}?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}movement/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch movement with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -30,7 +30,7 @@ export const getMovementById = async (id) => {
 
 export const createMovement = async (movementData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/movement`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}movement`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const createMovement = async (movementData) => {
 
 export const updateMovement = async (id, movementData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/movement/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}movement/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const updateMovement = async (id, movementData) => {
 
 export const deleteMovement = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/movement/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}movement/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

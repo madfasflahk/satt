@@ -2,7 +2,7 @@
 
 export const getAllNotices = async () => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/notice?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}notice?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all notices: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -16,7 +16,7 @@ export const getAllNotices = async () => {
 
 export const getNoticeById = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/notice/${id}?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}notice/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch notice with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -30,7 +30,7 @@ export const getNoticeById = async (id) => {
 
 export const createNotice = async (noticeData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/notice`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}notice`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const createNotice = async (noticeData) => {
 
 export const updateNotice = async (id, noticeData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/notice/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}notice/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const updateNotice = async (id, noticeData) => {
 
 export const deleteNotice = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/notice/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}notice/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

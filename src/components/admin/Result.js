@@ -85,7 +85,7 @@ const Result = () => {
         const fetchResultOrder = async () => {
             try {
                 
-                const orderRes = await fetch(`https://www.luckpatix.com/api/v1/resultOrder`);
+                const orderRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`);
                 if (orderRes.ok) {
                     const orderData = await orderRes.json();
                     // Merge fetched order with default fields, prioritizing fetched data
@@ -127,7 +127,7 @@ const Result = () => {
         console.log("Saving updated fields:", resultFields);
         try {
             
-            const res = await fetch(`https://www.luckpatix.com/api/v1/resultOrder`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`, {
                 method: 'POST', // Assuming POST for saving/updating the order
                 headers: {
                     'Content-Type': 'application/json',

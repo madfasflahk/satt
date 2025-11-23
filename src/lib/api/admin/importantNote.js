@@ -2,7 +2,7 @@
 
 export const getAllImportantNotes = async () => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantNote?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantNote?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch all important notes: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -16,7 +16,7 @@ export const getAllImportantNotes = async () => {
 
 export const getImportantNoteById = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantNote/${id}?admin=1`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantNote/${id}?admin=1`);
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Failed to fetch important note with ID ${id}: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -30,7 +30,7 @@ export const getImportantNoteById = async (id) => {
 
 export const createImportantNote = async (importantNoteData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantNote`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantNote`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const createImportantNote = async (importantNoteData) => {
 
 export const updateImportantNote = async (id, importantNoteData) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantNote/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantNote/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const updateImportantNote = async (id, importantNoteData) => {
 
 export const deleteImportantNote = async (id) => {
     try {
-        const response = await fetch(`https://www.luckpatix.com/api/v1/importantNote/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}importantNote/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {

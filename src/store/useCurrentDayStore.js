@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import axios from "axios";
 
 const useCurrentDayStore = create((set, get) => ({
   year: new Date().getFullYear(),
@@ -12,20 +13,26 @@ const useCurrentDayStore = create((set, get) => ({
 
   fetchResults: async () => {
     const { year, month } = get();
-    set({ loading: true, error: null });
-    try {
-      const res = await fetch(`https://luckpatix.com/api/v1/result?year=${year}&month=${month}`, {
-        cache: 'no-store',
-      });
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch results');
-      }
-      
-      const data = await res.json();
-      set({ data, loading: false });
+    set({ loading: true, error: null });
+
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}api/v1/result`,
+        {
+          params: { year, month },
+          // NO CACHING
+          headers: { "Cache-Control": "no-cache" },
+        }
+      );
+
+      set({ data: response.data, loading: false });
     } catch (error) {
-      set({ error: error.message, loading: false, data: null });
+      set({
+        error: error?.response?.data?.message || error.message,
+        loading: false,
+        data: null,
+      });
     }
   },
 }));
