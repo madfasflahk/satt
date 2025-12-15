@@ -21,8 +21,12 @@ const useCurrentDayStore = create((set, get) => ({
         `${process.env.NEXT_PUBLIC_API_URL}result`,
         {
           params: { year, month },
-          // NO CACHING
-          headers: { "Cache-Control": "no-cache" },
+          headers: {
+            "Cache-Control": "no-cache",
+            // Force JSON
+            "Accept": "application/json",
+          },
+          withCredentials: false, // if API doesn't require cookies
         }
       );
 

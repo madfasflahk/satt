@@ -1,6 +1,4 @@
-import parse from "html-react-parser";
 import React from "react";
-import DOMPurify from "dompurify";
 import HtmlRender from "./HtmlRender";
 const getCurrentResult = async () => {
   try {
