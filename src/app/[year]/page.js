@@ -18,6 +18,8 @@ const GetResultOrder = async () => {
 };
 
 const getYearlyData = async (year) => {
+
+    if(Number(year)===NaN) return null;
     const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}result?year=${year}`,
         { cache: 'no-store' }

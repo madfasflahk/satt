@@ -84,31 +84,55 @@ const Result = () => {
         // Let's fetch the result order from the API to initialize resultFields
         const fetchResultOrder = async () => {
             try {
-                
-                const orderRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`);
-                if (orderRes.ok) {
-                    const orderData = await orderRes.json();
-                    // Merge fetched order with default fields, prioritizing fetched data
-                    const mergedFields = defaultResultFields.map(defaultField => { // Use defaultResultFields here
-                        const fetchedField = orderData.find(f => f.key === defaultField.key);
-                        return fetchedField ? { ...defaultField, ...fetchedField } : defaultField;
-                    });
-                    // Add any new fields from fetched data that are not in default
-                    orderData.forEach(fetchedField => {
-                        if (!mergedFields.some(f => f.key === fetchedField.key)) {
-                            mergedFields.push(fetchedField);
-                        }
-                    });
-                    setResultFields(mergedFields.sort((a, b) => a.order - b.order));
-                } else {
+                const orderRes = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}resultOrder`
+                );
+
+                if (!orderRes.ok) {
                     console.error("Failed to fetch result order for admin panel");
-                    setResultFields(defaultResultFields); // Fallback to default if fetch fails
+                    setResultFields(defaultResultFields);
+                    return;
                 }
+
+                const orderData = await orderRes.json();
+
+                // ✅ Convert object → array
+                const orderArray = Object.entries(orderData).map(
+                    ([key, value]) => ({
+                        key,          // important for matching
+                        ...value
+                    })
+                );
+
+                // ✅ Merge with default fields
+                const mergedFields = defaultResultFields.map(defaultField => {
+                    const fetchedField = orderArray.find(
+                        f => f.key === defaultField.key
+                    );
+
+                    return fetchedField
+                        ? { ...defaultField, ...fetchedField }
+                        : defaultField;
+                });
+
+                // ✅ Add new fields not present in defaults
+                orderArray.forEach(fetchedField => {
+                    if (!mergedFields.some(f => f.key === fetchedField.key)) {
+                        mergedFields.push(fetchedField);
+                    }
+                });
+
+                // ✅ Sort by order
+                setResultFields(
+                    mergedFields.sort((a, b) => a.order - b.order)
+                );
+
             } catch (error) {
                 console.error("Error fetching result order for admin panel:", error);
-                setResultFields(defaultResultFields); // Fallback to default if error
+                setResultFields(defaultResultFields);
             }
         };
+
         fetchResultOrder();
     }, [fetchResults, defaultResultFields]); // fetchResults and defaultResultFields are dependencies
 
@@ -124,9 +148,9 @@ const Result = () => {
 
     const handleSaveFields = async () => {
         // Here you would typically send the 'resultFields' state to your backend API to save the changes
-        console.log("Saving updated fields:", resultFields);
+        
         try {
-            
+
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`, {
                 method: 'POST', // Assuming POST for saving/updating the order
                 headers: {
@@ -226,7 +250,7 @@ const Result = () => {
         const month = new Date(date).getMonth() + 1;
         const year = date.split("-")[0];
         const day = date.split("-")[2];
-        
+
         // Filter out empty values from rest
         const filteredRest = Object.fromEntries(
             Object.entries(rest).filter(([, value]) => value !== "")
@@ -271,7 +295,7 @@ const Result = () => {
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
                 <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-2xl w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
                     <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-2xl">&times;</button>
-                    
+
                     {modal === 'fields' && (
                         <div>
                             <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">Manage Result Fields</h2>
@@ -332,13 +356,13 @@ const Result = () => {
                         </form>
                     )}
                     {modal === 'direct' && (
-                         <form onSubmit={handleSubmitDirect}>
+                        <form onSubmit={handleSubmitDirect}>
                             <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Add Single Day Result</h2>
                             <div className="mb-6">
-                                 <input type="date" name="date" value={formDataDirect.date} onChange={handleChangeDirectUpload} className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500" required />
+                                <input type="date" name="date" value={formDataDirect.date} onChange={handleChangeDirectUpload} className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500" required />
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                                {resultFields.filter(f => f.visible).sort((a,b) => a.order - b.order).map(field => (
+                                {resultFields.filter(f => f.visible).sort((a, b) => a.order - b.order).map(field => (
                                     <div key={field.name}>
                                         <label htmlFor={field.name} className="capitalize block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">{field.virtual_name}</label>
                                         <input type="number" id={field.name} name={field.name} value={formDataDirect[field.name]} onChange={handleChangeDirectUpload} className="w-full p-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500" />

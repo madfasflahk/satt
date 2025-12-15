@@ -327,7 +327,7 @@ const Result = () => {
                                 year, month, resultList
                             }
 
-                            console.log(formDataDirect);
+                           
 
 
                             try {

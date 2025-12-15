@@ -80,7 +80,7 @@ const useAdminStore = create((set) => ({
         set({ isLoading: true, isError: false });
         try {
             const data = await getAllFreeAds();
-            console.log(data,'updatedddddddddd');
+  
             set({ freeAds: data, isLoading: false });
         } catch (error) {
             set({ isError: true, isLoading: false });

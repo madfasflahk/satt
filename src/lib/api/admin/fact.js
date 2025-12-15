@@ -1,5 +1,5 @@
 // src/lib/api/admin/fact.js
-const API_URL = '/api/v1/fact';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}fact`;
 
 export const getAllFacts = async () => {
     const response = await fetch(`${API_URL}?admin=1`);

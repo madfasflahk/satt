@@ -1,14 +1,13 @@
-
 export async function getCurrentDay() {
   try {
     const response = await fetch(
-      `https://luckpatix.com/api/v1/result/currentday`,
+      `${process.env.NEXT_PUBLIC_API_URL}currentDay`,
       {
-        next: { revalidate: 30 },
+        method: "GET",
         headers: { "Content-Type": "application/json" },
       }
     );
-
+   
     if (response.status === 404) {
       const data = await response.json();
       return { success: false, message: data.message };
@@ -23,7 +22,7 @@ export async function getCurrentDay() {
     }
 
     const data = await response.json();
-    return { success: true, data: data }; // ⭐ FIXED: return only inner data
+    return { success: true, data: data };
   } catch (error) {
     console.error("Error in getCurrentDay:", error);
     return {
@@ -32,6 +31,7 @@ export async function getCurrentDay() {
     };
   }
 }
+
 export default async function CurrentResult({ resultOrder }) {
   const data = await getCurrentDay();
 
@@ -53,20 +53,72 @@ export default async function CurrentResult({ resultOrder }) {
     return "🌙 Good Night!";
   };
 
+  // Format current date and time for digital clock
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return {
+      time: now.toLocaleTimeString('en-US', { 
+        hour12: false, 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      }),
+      date: now.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric'
+      }),
+      year: now.getFullYear()
+    };
+  };
+
   // ⭐ FILTER + SORT
   const sortedKeys = Object.keys(resultOrder)
-    .filter((key) => resultOrder[key]?.isVerified)               // show only verified
-    .sort((a, b) => resultOrder[a].order - resultOrder[b].order); // sort by order
+    .filter((key) => resultOrder[key]?.isVerified)
+    .sort((a, b) => resultOrder[a].order - resultOrder[b].order);
+
+  const currentDateTime = getCurrentDateTime();
 
   return (
     <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
-      <h1 className="text-3xl font-semibold mb-6 tracking-wide text-cyan-400 drop-shadow-lg">
-        {getGreeting()}
-      </h1>
+      {/* Header with Greeting and Digital Clock */}
+      <div className="w-full max-w-xl mb-8 text-center">
+        <h1 className="text-3xl font-semibold mb-4 tracking-wide text-cyan-400 drop-shadow-lg">
+          {getGreeting()}
+        </h1>
+        
+        {/* Digital Clock Container */}
+        <div className="inline-flex flex-col items-center p-4 rounded-xl 
+                       bg-gradient-to-br from-cyan-900/20 to-cyan-950/20 
+                       border border-cyan-700/30 backdrop-blur-sm">
+          {/* Time - Large Digital Display */}
+          <div className="flex items-center justify-center mb-2">
+            <div className="text-4xl font-mono font-bold tracking-wider text-cyan-300 
+                          drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">
+              {currentDateTime.time}
+            </div>
+          </div>
+          
+          {/* Date and Year - Smaller Display */}
+          <div className="flex items-center gap-4 text-cyan-200/80">
+            <div className="text-lg font-medium tracking-wide">
+              {currentDateTime.date}
+            </div>
+            <div className="w-1 h-1 rounded-full bg-cyan-400/60"></div>
+            <div className="text-lg font-medium tracking-wide">
+              {currentDateTime.year}
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* Results Grid */}
       <div className="w-full max-w-xl space-y-5">
         {sortedKeys.map((key) => {
           const value = apiData[key];
+          const displayValue = value !== undefined && value !== null 
+            ? value 
+            : "Wait...";
 
           return (
             <div
@@ -82,13 +134,12 @@ export default async function CurrentResult({ resultOrder }) {
                 {resultOrder[key].name}
               </span>
 
-              <span className="text-4xl font-extrabold tracking-widest text-white 
-                               drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]">
-                {value === undefined || value === null ? (
-                  <span className="text-red-400 text-2xl animate-pulse">Wait...</span>
-                ) : (
-                  value
-                )}
+              <span className={`text-4xl font-extrabold tracking-widest 
+                               ${displayValue === "Wait..." 
+                                 ? "text-amber-400 animate-pulse drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" 
+                                 : "text-white drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]"
+                               }`}>
+                {displayValue}
               </span>
             </div>
           );
@@ -97,4 +148,3 @@ export default async function CurrentResult({ resultOrder }) {
     </div>
   );
 }
-

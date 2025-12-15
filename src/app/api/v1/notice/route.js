@@ -2,7 +2,7 @@
 
 
 import dbConnect from '../../../../lib/db';
-import NoticeBoard from '../../../../models/NoticeBoard';
+import Notice from '../../../../models/NoticeBoard';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
@@ -18,21 +18,28 @@ export async function POST(request) {
   }
 }
 
+
 export async function GET(request) {
   await dbConnect();
+
   try {
     const { searchParams } = new URL(request.url);
     const admin = searchParams.get('admin');
-    let query = {};
-    if (admin === '1') {
-      query = {};
-    } else {
-      query = { validation: true };
-    }
-    const notices = await Notice.find(query);
+   
+    const query = admin === '1'
+      ? {}
+      : { validation: true }; // make sure this field exists in schema
+
+    const notices = await Notice.find(query).lean();
+
     return NextResponse.json(notices, { status: 200 });
+
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error fetching notices' }, { status: 500 });
+    console.error('Notice API error:', error);
+    return NextResponse.json(
+      { message: 'Error fetching notices' },
+      { status: 500 }
+    );
   }
 }
+

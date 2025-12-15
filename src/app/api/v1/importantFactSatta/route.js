@@ -26,7 +26,7 @@ export async function GET(req) {
     } else {
       facts = await ImportantFactAboutSatta.find({ validation: true }).limit(10).lean();
     }
-    console.log(facts);
+   
     return NextResponse.json(facts, { status: 200 });
   } catch (error) {
     console.error("Error in GET /api/v1/importantFactSatta:", error);
