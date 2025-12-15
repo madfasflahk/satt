@@ -1,6 +1,7 @@
 import parse from "html-react-parser";
 import React from "react";
-
+import DOMPurify from "dompurify";
+import HtmlRender from "./HtmlRender";
 const getCurrentResult = async () => {
   try {
     
@@ -9,7 +10,7 @@ const getCurrentResult = async () => {
       next: { revalidate: 30 },   // ⭐ FIXED
       headers: { "Content-Type": "application/json" },
     });
-
+  
     if (!response.ok) {
       const errorBody = await response.text();
       throw new Error(`Failed to fetch data: ${response.status} ${response.statusText} - ${errorBody}`);
@@ -37,12 +38,11 @@ const Importantfact = async () => {
             importantFact.map((e) => (
               <li
                 key={e._id}
-                className="bg-white border-l-4 border-[#b91c1c] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 px-6 py-6"
+                className="bg-white border-l-4 border-[#b91c1c] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 px-2 py-4"
               >
-                <div className="text-gray-800 text-lg font-medium leading-relaxed">
-                  {parse(e.importantFactSatta)}
-                </div>
-              </li>
+                
+                  <HtmlRender data={e.importantFactSatta} />
+               </li>
             ))}
         </ul>
       </div>

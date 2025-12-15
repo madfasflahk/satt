@@ -24,12 +24,12 @@ export async function GET(req) {
     if (admin) {
       facts = await ImportantFactAboutSatta.find().limit(10).lean();
     } else {
-      facts = await ImportantFactAboutSatta.find({ validation: true }).limit(10).lean();
+      facts = await ImportantFactAboutSatta.find().limit(10).lean();
     }
    
     return NextResponse.json(facts, { status: 200 });
   } catch (error) {
-    console.error("Error in GET /api/v1/importantFactSatta:", error);
+  
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

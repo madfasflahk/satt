@@ -2,20 +2,47 @@
 import dbConnect from '../../../../../lib/db';
 import ImportantFactAboutSatta from '../../../../../models/ImportantFactAboutSatta';
 import { NextResponse } from 'next/server';
-
-export async function PUT(request, { params }) {
+export async function PUT(request) {
   await dbConnect();
+  
   try {
-    const { id } = params;
-    const body = await request.json();
-    const updatedFact = await ImportantFactAboutSatta.findByIdAndUpdate(id, { $set: body }, { new: true });
-    if (!updatedFact) {
-      return NextResponse.json({ message: 'Important Fact not found' }, { status: 404 });
+    // Extract id from URL
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    const id = pathSegments[pathSegments.length - 1];
+    
+    console.log("Extracted ID from URL:", id);
+    
+    if (!id || id.trim() === '') {
+      return NextResponse.json({ message: 'ID is required' }, { status: 400 });
     }
-    return NextResponse.json(updatedFact, { status: 200 });
+    
+    const body = await request.json();
+    
+    // You can also try finding and updating separately
+    const existingFact = await ImportantFactAboutSatta.findById(id);
+    
+    if (!existingFact) {
+      console.log(`Document not found for ID: ${id}`);
+      return NextResponse.json({ 
+        message: 'Important Fact not found',
+        providedId: id 
+      }, { status: 404 });
+    }
+    
+    // Update the document
+    Object.assign(existingFact, body);
+    await existingFact.save();
+    
+    console.log("Document updated successfully");
+    return NextResponse.json(existingFact, { status: 200 });
+    
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error updating important fact' }, { status: 500 });
+    console.error("Error:", error);
+    return NextResponse.json({ 
+      message: 'Error updating important fact',
+      error: error.message 
+    }, { status: 500 });
   }
 }
 
