@@ -18,7 +18,7 @@ const useCurrentDayStore = create((set, get) => ({
 
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}api/v1/result`,
+        `${process.env.NEXT_PUBLIC_API_URL}result`,
         {
           params: { year, month },
           // NO CACHING

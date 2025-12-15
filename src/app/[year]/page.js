@@ -82,7 +82,7 @@ const YearPage = async ({ params }) => {
     ];
 
     return (
-        <div className="container max-w-6xl mx-auto mt-8 mb-8 px-4">
+        <div className="container max-w-6xl mx-auto mt-8 mb-8 px-4 ">
             {processedData
                 .sort((a, b) => a.month - b.month)
                 .map((item, index) => {

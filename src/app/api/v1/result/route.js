@@ -77,59 +77,61 @@ export async function POST(request) {
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
-
-
 export async function GET(request) {
+  await dbConnect();
+
   try {
-    // Full URL তৈরি করুন
-    const baseUrl = 'https://luckpatix.com';
-    const fullUrl = new URL(request.url, baseUrl);
-    
-    const searchParams = fullUrl.searchParams;
-    const year = searchParams.get("year");
-    const month = parseInt(searchParams.get("month"));
-    const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 10;
-    const skip = (page - 1) * limit;
-    
-    console.log("Query Params:", { year, month, page, limit, skip });
-    
-    let chart;
-    if (year && month) {
-      chart = await SattaKingRecordChartjs.findOne({
-        $or: [
-          { year: year, month: month },
-          { year: year.toString(), month: month }
-        ]
-      });
-    } else if (year) {
-      chart = await SattaKingRecordChartjs.find({
-        $or: [
-          { year: year },
-          { year: year.toString() }
-        ]
-      })
-      .sort({ month: 1 })
-      .select("-statusHistory -Comment")
-      .skip(skip)
-      .limit(limit);
-    } else {
-      chart = await SattaKingRecordChartjs.find()
+    const { searchParams } = new URL(request.url);
+
+    const yearParam = searchParams.get("year");
+    const monthParam = searchParams.get("month");
+
+    // 🚫 ignore service worker & invalid calls
+    if (!yearParam || yearParam.includes(".js")) {
+      const data = await SattaKingRecordChartjs.find()
         .sort({ updatedAt: -1 })
-        .select("-statusHistory -Comment")
-        .skip(skip)
-        .limit(limit);
+        .lean();
+
+      return NextResponse.json(data, { status: 200 });
     }
-    
-    return new Response(JSON.stringify(chart), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
+
+    const yearNumber = Number(yearParam);
+    const month = monthParam ? Number(monthParam) : null;
+
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
+
+    /* ======================
+       year + month
+    ======================= */
+    if (!isNaN(yearNumber) && month !== null) {
+      const chart = await SattaKingRecordChartjs.findOne({
+        $or: [{ year: yearNumber }, { year: yearParam }],
+        month: month
+      }).lean();
+
+      return NextResponse.json(chart, { status: 200 });
+    }
+
+    /* ======================
+       default listing
+    ======================= */
+    const chart = await SattaKingRecordChartjs.find({
+      $or: [{ year: yearNumber }, { year: yearParam }]
+    })
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    return NextResponse.json(chart, { status: 200 });
+
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error("API ERROR:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
