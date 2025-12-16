@@ -13,7 +13,22 @@ function dateToMilliseconds(day, month, year) {
   const indianDate = new Date(indianTimeString);
   return indianDate.getTime();
 }
+const normalizeResult = (result) => ({
+  day: result.day,
+  DateTime: result.DateTime,
 
+  delhiLuckyBazar: result["Delhi Lucky Bazar"]?.trim() ?? "",
+  disawer: result["Disawer"]?.trim() ?? "",
+  faridabad: result["Faridabad"]?.trim() ?? "",
+  gaziyabad: result["Gaziyabad"]?.trim() ?? "",
+  kolkataKing: result["Kolkata King"]?.trim() ?? "",
+  gali: result["Gali"]?.trim() ?? "",
+  delhiBazar: result["Delhi Bazar"]?.trim() ?? "",
+  shreeGanesh: result["Shree Ganesh"]?.trim() ?? "",
+  luckpoti: result["Luckpoti"]?.trim() ?? "",
+  sreeRam: result["Sree Ram"]?.trim() ?? "",
+  dlb: result["DLB"]?.trim() ?? "",
+});
 
 
 export async function POST(request) {
@@ -22,59 +37,68 @@ export async function POST(request) {
   try {
     const { year, month, resultList } = await request.json();
 
-
-    if (!resultList || resultList.length === 0) {
+    // 🔴 Basic validation
+    if (!year || !month || !Array.isArray(resultList) || resultList.length === 0) {
       return NextResponse.json(
-        { message: "Result list is required" },
+        { message: "Year, month and resultList are required" },
         { status: 400 }
       );
     }
 
-    // ---- Validate only day ----
     if (!("day" in resultList[0])) {
       return NextResponse.json(
-        { message: "'day' field is required" },
+        { message: "'day' field is required in resultList" },
         { status: 400 }
       );
     }
 
-    // ----- Add timestamp to each result -----
-    for (const result of resultList) {
-      result.DateTime = dateToMilliseconds(result.day, month, year);
-    }
+    // 🔹 Normalize + add DateTime
+    const normalizedResultList = resultList.map((result) =>
+      normalizeResult({
+        ...result,
+        DateTime: dateToMilliseconds(result.day, month, year),
+      })
+    );
 
+    // 🔹 Find existing month record
     const existingRecord = await SattaKingRecordChartjs.findOne({ year, month });
 
     if (existingRecord) {
-      // ---- Update or Insert ----
-      for (const result of resultList) {
+      // 🔹 Update or insert day-wise results
+      for (const result of normalizedResultList) {
         const existingDay = existingRecord.resultList.find(
           (entry) => entry.day === result.day
         );
 
         if (existingDay) {
-          // -------- PARTIAL UPDATE --------
-          for (const key in result) {
-            if (result[key] !== undefined) {
-              existingDay[key] = result[key];
-            }
-          }
+          Object.assign(existingDay, result);
         } else {
-          // new day insert
           existingRecord.resultList.push(result);
         }
       }
 
+      // 🔹 Important for nested updates
+      existingRecord.markModified("resultList");
       await existingRecord.save();
     } else {
-      // Create new month doc
-      await SattaKingRecordChartjs.create({ year, month, resultList });
+      // 🔹 Create new record
+      await SattaKingRecordChartjs.create({
+        year,
+        month,
+        resultList: normalizedResultList,
+      });
     }
 
-    return NextResponse.json("Record updated successfully", { status: 200 });
+    return NextResponse.json(
+      { message: "Record updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    console.error("Result save error:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 export async function GET(request) {

@@ -148,7 +148,7 @@ const Result = () => {
 
     const handleSaveFields = async () => {
         // Here you would typically send the 'resultFields' state to your backend API to save the changes
-        
+
         try {
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}resultOrder`, {
@@ -196,8 +196,20 @@ const Result = () => {
 
     const handleChangeDirectUpload = (e) => {
         const { name, value } = e.target;
-        setFormDataDirect({ ...formDataDirect, [name]: value });
+
+        if(name!=="date"){
+
+            if (value && isNaN(Number(value))) {
+                return;
+            }
+        }
+
+        setFormDataDirect({
+            ...formDataDirect,
+            [name]: value,
+        });
     };
+
 
     const handleFile = (e) => {
         const file = e.target.files[0];
@@ -365,7 +377,15 @@ const Result = () => {
                                 {resultFields.filter(f => f.visible).sort((a, b) => a.order - b.order).map(field => (
                                     <div key={field.name}>
                                         <label htmlFor={field.name} className="capitalize block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">{field.virtual_name}</label>
-                                        <input type="number" id={field.name} name={field.name} value={formDataDirect[field.name]} onChange={handleChangeDirectUpload} className="w-full p-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500" />
+                                        <input
+                                            type="text"
+                                            id={field.name}
+                                            name={field.name}
+                                            value={formDataDirect[field.name] ?? ""}
+                                            onChange={handleChangeDirectUpload}
+                                            className="w-full p-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg"
+                                        />
+
                                     </div>
                                 ))}
                             </div>
@@ -408,8 +428,8 @@ const Result = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {results && results.length > 0 ? results.map((e) => (
-                                <tr key={e._id} className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            {results && results.length > 0 ? results.map((e,i) => (
+                                <tr key={i} className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{e.year}</td>
                                     <td className="px-6 py-4">{monthNames[e.month - 1]}</td>
                                     <td className="px-6 py-4 text-right">

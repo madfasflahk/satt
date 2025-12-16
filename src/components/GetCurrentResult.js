@@ -85,9 +85,9 @@ export default async function CurrentResult({ resultOrder }) {
     <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
       {/* Header with Greeting and Digital Clock */}
       <div className="w-full max-w-xl mb-8 text-center">
-        <h1 className="text-3xl font-semibold mb-4 tracking-wide text-cyan-400 drop-shadow-lg">
+        {/* <h1 className="text-3xl font-semibold mb-4 tracking-wide text-cyan-400 drop-shadow-lg">
           {getGreeting()}
-        </h1>
+        </h1> */}
         
        <IndianDigitalClock />
       </div>
