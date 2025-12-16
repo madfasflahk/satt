@@ -74,7 +74,7 @@ const ImportantFact = () => {
                     <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-2xl">&times;</button>
                     <form onSubmit={handleSubmit}>
                         <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Add Important Fact</h2>
-                        <div className="mb-4 quill-container">
+                        <div className="mb-4 quill-container max-h-72 overflow-auto">
                             <ReactQuill
                                 theme="snow"
                                 value={formData.importantFactSatta}
