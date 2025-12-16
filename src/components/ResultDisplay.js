@@ -13,7 +13,8 @@ const ResultDisplay = ({ data, resultOrder }) => {
   );
 
   const formatNumber = (number) => {
-    if (number !== null && !isNaN(number)) {
+    if (number !== null && number!=="" && number!=0 && !isNaN(number)) {
+      console.log(number)
       return parseInt(number).toString().padStart(2, "0");
     }
     return "✱";
