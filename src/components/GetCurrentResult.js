@@ -1,3 +1,5 @@
+import IndianDigitalClock from "./Clock";
+
 export async function getCurrentDay() {
   try {
     const response = await fetch(
@@ -87,29 +89,7 @@ export default async function CurrentResult({ resultOrder }) {
           {getGreeting()}
         </h1>
         
-        {/* Digital Clock Container */}
-        <div className="inline-flex flex-col items-center p-4 rounded-xl 
-                       bg-gradient-to-br from-cyan-900/20 to-cyan-950/20 
-                       border border-cyan-700/30 backdrop-blur-sm">
-          {/* Time - Large Digital Display */}
-          <div className="flex items-center justify-center mb-2">
-            <div className="text-4xl font-mono font-bold tracking-wider text-cyan-300 
-                          drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">
-              {currentDateTime.time}
-            </div>
-          </div>
-          
-          {/* Date and Year - Smaller Display */}
-          <div className="flex items-center gap-4 text-cyan-200/80">
-            <div className="text-lg font-medium tracking-wide">
-              {currentDateTime.date}
-            </div>
-            <div className="w-1 h-1 rounded-full bg-cyan-400/60"></div>
-            <div className="text-lg font-medium tracking-wide">
-              {currentDateTime.year}
-            </div>
-          </div>
-        </div>
+       <IndianDigitalClock />
       </div>
 
       {/* Results Grid */}
