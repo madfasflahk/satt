@@ -60,32 +60,55 @@ export async function POST(request) {
       })
     );
 
-    // 🔹 Find existing month record
     const existingRecord = await SattaKingRecordChartjs.findOne({ year, month });
 
     if (existingRecord) {
-      // 🔹 Update or insert day-wise results
       for (const result of normalizedResultList) {
         const existingDay = existingRecord.resultList.find(
           (entry) => entry.day === result.day
         );
 
         if (existingDay) {
-          Object.assign(existingDay, result);
+          // 🔥 UPDATE ONLY NON-EMPTY VALUES
+          for (const key in result) {
+            if (
+              key !== "day" &&
+              key !== "DateTime" &&
+              result[key] !== undefined &&
+              result[key] !== null &&
+              result[key] !== ""
+            ) {
+              existingDay[key] = result[key];
+            }
+          }
         } else {
-          existingRecord.resultList.push(result);
+          // 🔹 For new day, remove empty values before insert
+          const cleanedResult = Object.fromEntries(
+            Object.entries(result).filter(
+              ([, value]) => value !== undefined && value !== null && value !== ""
+            )
+          );
+
+          existingRecord.resultList.push(cleanedResult);
         }
       }
 
-      // 🔹 Important for nested updates
       existingRecord.markModified("resultList");
       await existingRecord.save();
     } else {
-      // 🔹 Create new record
+      // 🔹 Clean empty values before create
+      const cleanedResultList = normalizedResultList.map((result) =>
+        Object.fromEntries(
+          Object.entries(result).filter(
+            ([, value]) => value !== undefined && value !== null && value !== ""
+          )
+        )
+      );
+
       await SattaKingRecordChartjs.create({
         year,
         month,
-        resultList: normalizedResultList,
+        resultList: cleanedResultList,
       });
     }
 
@@ -101,6 +124,7 @@ export async function POST(request) {
     );
   }
 }
+
 export async function GET(request) {
   await dbConnect();
 
