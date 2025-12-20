@@ -62,18 +62,18 @@ const Result = () => {
     const [excelData, setExcelData] = useState(null);
 
     const defaultResultFields = useMemo(() => [ // Wrap in useMemo
-        { name: "delhiLuckyBazar", virtual_name: "Delhi Lucky Bazar", visible: true, order: 1, isVerified: true, key: "delhiLuckyBazar" },
+        // { name: "delhiLuckyBazar", virtual_name: "Delhi Lucky Bazar", visible: true, order: 1, isVerified: true, key: "delhiLuckyBazar" },
         { name: "disawer", virtual_name: "Disawer", visible: true, order: 2, isVerified: true, key: "disawer" },
         { name: "faridabad", virtual_name: "Faridabad", visible: true, order: 3, isVerified: true, key: "faridabad" },
         { name: "gaziyabad", virtual_name: "Gaziyabad", visible: true, order: 4, isVerified: true, key: "gaziyabad" },
-        { name: "kolkataKing", virtual_name: "Kolkata King", visible: true, order: 5, isVerified: true, key: "kolkataKing" },
+        // { name: "kolkataKing", virtual_name: "Kolkata King", visible: true, order: 5, isVerified: true, key: "kolkataKing" },
         { name: "gali", virtual_name: "Gali", visible: true, order: 6, isVerified: true, key: "gali" },
         { name: "delhiBazar", virtual_name: "Delhi Bazar", visible: true, order: 7, isVerified: true, key: "delhiBazar" },
         { name: "shreeGanesh", virtual_name: "Shree Ganesh", visible: true, order: 8, isVerified: true, key: "shreeGanesh" },
         // New fields
         { name: "luckpoti", virtual_name: "Luckpoti", visible: true, order: 9, isVerified: true, key: "luckpoti" },
-        { name: "sreeRam", virtual_name: "Sree Ram", visible: true, order: 10, isVerified: true, key: "sreeRam" },
-        { name: "dlb", virtual_name: "DLB", visible: true, order: 11, isVerified: true, key: "dlb" },
+        // { name: "sreeRam", virtual_name: "Sree Ram", visible: true, order: 10, isVerified: true, key: "sreeRam" },
+        // { name: "dlb", virtual_name: "DLB", visible: true, order: 11, isVerified: true, key: "dlb" },
     ], []); // Empty dependency array for useMemo
 
     const [resultFields, setResultFields] = useState([]); // Initialize as empty, will be populated by useEffect
